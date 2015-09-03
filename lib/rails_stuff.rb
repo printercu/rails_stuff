@@ -6,4 +6,5 @@ module RailsStuff
   extend ActiveSupport::Autoload
 
   autoload :Railtie
+  autoload :ParamsParser
 end

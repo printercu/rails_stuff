@@ -1,8 +1,11 @@
 AllCops:
   RunRailsCops: true
 
-Style/Documentation:
-  Enabled: false
+Style/Documentation: {Enabled: false}
+Style/DotPosition: {EnforcedStyle: trailing}
+Style/ModuleFunction: {Enabled: false}
+Style/SignalException: {EnforcedStyle: only_raise}
+Style/SpaceInsideHashLiteralBraces: {EnforcedStyle: no_space}
+Style/TrailingComma: {Enabled: false}
 
-Metrics/LineLength:
-  Max: 100
+Metrics/LineLength: {Max: 100}
