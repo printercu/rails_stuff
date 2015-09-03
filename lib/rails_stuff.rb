@@ -7,6 +7,7 @@ module RailsStuff
 
   autoload :ParamsParser
   autoload :TypesTracker
+  autoload :NullifyBlankAttrs
 end
 
 require 'rails_stuff/railtie' if defined?(Rails::Railtie)
