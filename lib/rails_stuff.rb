@@ -1,0 +1,9 @@
+require 'rails_stuff/version'
+require 'active_support/dependencies/autoload'
+
+# Useful stuff for Rails.
+module RailsStuff
+  extend ActiveSupport::Autoload
+
+  autoload :Railtie
+end
