@@ -9,3 +9,4 @@ Style/SpaceInsideHashLiteralBraces: {EnforcedStyle: no_space}
 Style/TrailingComma: {Enabled: false}
 
 Metrics/LineLength: {Max: 100}
+Metrics/MethodLength: {Max: 30}

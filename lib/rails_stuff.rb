@@ -5,9 +5,10 @@ require 'active_support/dependencies/autoload'
 module RailsStuff
   extend ActiveSupport::Autoload
 
-  autoload :ParamsParser
-  autoload :TypesTracker
   autoload :NullifyBlankAttrs
+  autoload :ParamsParser
+  autoload :RandomUniqAttr
+  autoload :TypesTracker
 end
 
 require 'rails_stuff/railtie' if defined?(Rails::Railtie)
