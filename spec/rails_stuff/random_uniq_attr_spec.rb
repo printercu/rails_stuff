@@ -1,3 +1,5 @@
+require 'support/active_record'
+
 RSpec.describe RailsStuff::RandomUniqAttr do
   let(:model) do
     described_class = self.described_class

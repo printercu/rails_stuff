@@ -1,3 +1,8 @@
+require 'json'
+require 'active_support/core_ext/time'
+
+Time.zone_default = Time.find_zone('UTC')
+
 RSpec.describe RailsStuff::ParamsParser do
   describe '.parse_int' do
     subject { ->(val = input) { described_class.parse_int(val) } }
