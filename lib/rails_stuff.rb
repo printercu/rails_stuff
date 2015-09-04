@@ -5,6 +5,7 @@ require 'active_support/dependencies/autoload'
 module RailsStuff
   extend ActiveSupport::Autoload
 
+  autoload :Helpers
   autoload :NullifyBlankAttrs
   autoload :ParamsParser
   autoload :RandomUniqAttr
