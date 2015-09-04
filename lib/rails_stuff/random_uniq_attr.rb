@@ -2,22 +2,24 @@ module RailsStuff
   # Provides save way to generate uniq random values for ActiveRecord models.
   # You need to make field nullable and add unique index on it.
   # The way it works:
-  #   - instance is saved as usual
-  #   - if random fields are not empty, it does nothing
-  #   - generates random value and tries to update instance
-  #   - if RecordNotUnique is occured, it keeps trying to generate new values.
+  #
+  # - Instance is saved as usual
+  # - If random fields are not empty, it does nothing
+  # - Generates random value and tries to update instance
+  # - If `RecordNotUnique` is occured, it keeps trying to generate new values.
+  #
   module RandomUniqAttr
     DEFAULT_GENERATOR = ->(*) { SecureRandom.hex(32) }
 
     class << self
-      # Made from Devise.firendly_token with increased length.
+      # Made from `Devise.firendly_token` with increased length.
       def friendly_token(length = 32)
         SecureRandom.urlsafe_base64(length).tr('lIO0', 'sxyz')
       end
     end
 
-    # Generates necessary methods and setups on-create callback for the field.
-    # You can optionally pass custom generator function for the field:
+    # Generates necessary methods and setups on-create callback for the `field`.
+    # You can optionally pass custom generator function:
     #
     #     random_uniq_attr(:code) { |instance| my_random(instance) }
     #

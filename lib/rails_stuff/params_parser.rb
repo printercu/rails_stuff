@@ -50,6 +50,8 @@ module RailsStuff
       raise Error.new(e.message, val), nil, e.backtrace
     end
 
+    # Parses each value in array with specified block.
+    # Returns `nil` if `val` is not an array.
     def parse_array(val)
       parse(val) { val.map { |x| yield x unless x.nil? } } if val.is_a?(Array)
     end
@@ -62,7 +64,7 @@ module RailsStuff
     # :method: parse_int_array
     # :call-seq: parse_int_array(val)
     #
-    # Parses array of ints. Returns nil if val is not array.
+    # Parses array of ints. Returns `nil` if `val` is not an array.
 
     # :method: parse_float
     # :call-seq: parse_float(val)
@@ -72,7 +74,7 @@ module RailsStuff
     # :method: parse_float_array
     # :call-seq: parse_float_array(val)
     #
-    # Parses array of floats. Returns nil if val is not array.
+    # Parses array of floats. Returns `nil` if `val` is not an array.
 
     # :method: parse_string
     # :call-seq: parse_string(val)
@@ -82,7 +84,7 @@ module RailsStuff
     # :method: parse_string_array
     # :call-seq: parse_string_array(val)
     #
-    # Parses array of strings. Returns nil if val is not array.
+    # Parses array of strings. Returns `nil` if `val` is not an array.
 
     # Parsers for generic types, which are implemented with #to_i, #to_f & #to_s
     # methods.
@@ -98,7 +100,7 @@ module RailsStuff
       end
     end
 
-    # Parse boolean using AR parser.
+    # Parse boolean using ActiveResord's parser.
     def parse_boolean(val)
       parse(val) do
         @boolean_parser ||= ActiveRecord::Type::Boolean.new
@@ -106,7 +108,7 @@ module RailsStuff
       end
     end
 
-    # Parse time in current TZ using Time.parse.
+    # Parse time in current TZ using `Time.parse`.
     def parse_datetime(val)
       parse(val) { Time.zone.parse(val) || raise('Invalid datetime') }
     end

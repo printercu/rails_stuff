@@ -8,12 +8,15 @@ module RailsStuff
   #
   # Redis is accessed via with_redis method which uses redis_pool
   # (default to `Rails.redis_pool`, see `pooled_redis` gem) to checkout connection.
-  # Basic methods are get, delete and set.
+  # Basic methods are #get, #delete and #set.
   #
   # Redis keys are generated from requested key and redis_prefix
-  # (default to underscored class name). You can pass array as a key and all the
-  # parts will be concatenated with ':'. set automalically generates
-  # sequential keys, if given key is nil (last element of array is nil).
+  # (default to underscored class name). You can pass an array as a key and all the
+  # parts will be concatenated with `:`. #set automalically generates
+  # sequential keys, if given key is `nil` (last element of array is `nil`).
+  #
+  # It uses `dump` and `load` methods to encode values
+  # (by default delegated to `Marshal`).
   module RedisStorage
     # Serializers
     delegate :dump, :load, to: Marshal
@@ -62,13 +65,13 @@ module RailsStuff
     # Override default redis_prefix.
     attr_writer :redis_prefix
 
-    # Generates key for given id(s) prefixed with #redis_prefix.
+    # Generates key for given `id`(s) prefixed with #redis_prefix.
     # Multiple ids are joined with `:`.
     def redis_key_for(id)
       "#{redis_prefix}:#{Array(id).join(':')}"
     end
 
-    # Generates key to store current id. Examples:
+    # Generates key to store current maximum id. Examples:
     #
     #     users_id_seq
     #     user_id_seq:eu
@@ -88,7 +91,7 @@ module RailsStuff
       with_redis { |redis| redis.del(redis_id_seq_key(*args)) }
     end
 
-    # Saves value to redis. If id is nil, it's generated with #next_id.
+    # Saves value to redis. If `id` is `nil`, it's generated with #next_id.
     # Returns last part of id / generated id.
     def set(id, value, options = {})
       id = Array(id)

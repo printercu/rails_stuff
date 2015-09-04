@@ -13,8 +13,8 @@ module RailsStuff
         base.types_list = list_class.new
       end
 
-      # Class for `types_list`. Default to Array. You can override it
-      # for every model, or assign new value to specific model
+      # Class for `types_list`. Default to `Array`. You can override it
+      # for all models, or assign new value to specific model
       # via `lypes_list=` right after extending.
       attr_accessor :list_class
     end

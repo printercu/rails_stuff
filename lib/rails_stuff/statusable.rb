@@ -1,18 +1,36 @@
 module RailsStuff
-  # Basic helpers to work with `status` field.
+  # Basic helpers to work with `status`-like field.
   #
   # For every status value it provides:
   #
-  # - scope with the same name (eg. `.rejected`)
+  # - scopes with status name (eg. `.rejected`, '.not_rejected')
   # - inquiry method to check status (eg. `#rejected?`)
   # - bang method to update status (eg. `#rejected!`)
   #
-  # It also contains translation helpers, validator, and `#status=` setter
-  # with symbols support.
+  # It also provides:
+  #
+  # - translation helpers (`acttivemodel_translation` gem required)
+  # - inclusion validator
+  # - string/symbol agnostic `#status=`
+  # - `#status_sym`
+  # - `status_select_options` helper.
+  #
   module Statusable
-    # Defines all helpers working with specific field (default to `status`).
+    # Defines all helpers working with `field` (default to `status`).
     # List of values can be given as second argument, otherwise it'll
-    # be read from const with pluralized name of field (eg. default to STATUSES).
+    # be read from const with pluralized name of `field` (eg. default to STATUSES).
+    #
+    # #### Options
+    #
+    # - `prefix`    - used to prefix value-named helpers.
+    #
+    #         # this defines #shipped?, #shipped! methods
+    #         has_status_field :delivery_status, %i(shipped delivered)
+    #
+    #         # this defines #delivery_shipped?, #delivery_shipped! methods
+    #         has_status_field :delivery_status, %i(shipped delivered), prefix: :delivery
+    #
+    # - `validate`  - additional options for validatior. `false` to disable it.
     def has_status_field(field = :status, statuses = nil, **options) # rubocop:disable AbcSize
       statuses ||= const_get(field.to_s.pluralize.upcase)
       prefix = options[:prefix]
@@ -48,12 +66,14 @@ module RailsStuff
 
     # Generates methods.
     module MethodsGenerator
+      # Generates all methods for the `field`.
       def generate_field_methods(field, statuses)
         field_accessor field
         translation_helpers field
         select_options_helper field, statuses
       end
 
+      # Generates methods for specific value.
       def status_accessor(field, status_name, prefix = nil)
         # Shortcut to check status.
         define_method "#{prefix}#{status_name}?" do
