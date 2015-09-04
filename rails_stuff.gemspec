@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'sdoc', '~> 0.4.1'
   spec.add_development_dependency 'pry', '~> 0.10.1'
   spec.add_development_dependency 'sqlite3', '~> 1.3.10'
+  spec.add_development_dependency 'pooled_redis', '~> 0.2.1'
   spec.add_development_dependency 'activemodel_translation', '~> 0.1.0'
 
   spec.add_development_dependency 'rspec', '~> 3.2.0'
