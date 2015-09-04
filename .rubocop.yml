@@ -1,9 +1,11 @@
 AllCops:
   RunRailsCops: true
 
+Style/AlignParameters: {EnforcedStyle: with_fixed_indentation}
 Style/Documentation: {Enabled: false}
 Style/DotPosition: {EnforcedStyle: trailing}
 Style/ModuleFunction: {Enabled: false}
+Style/PredicateName: {Enabled: false}
 Style/SignalException: {EnforcedStyle: only_raise}
 Style/SpaceInsideHashLiteralBraces: {EnforcedStyle: no_space}
 Style/TrailingComma: {Enabled: false}

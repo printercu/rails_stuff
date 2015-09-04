@@ -8,6 +8,7 @@ module RailsStuff
   autoload :NullifyBlankAttrs
   autoload :ParamsParser
   autoload :RandomUniqAttr
+  autoload :Statusable
   autoload :TypesTracker
 end
 
