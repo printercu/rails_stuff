@@ -11,6 +11,7 @@ module RailsStuff
   autoload :RandomUniqAttr
   autoload :RedisStorage
   autoload :Statusable
+  autoload :SortScope
   autoload :TypesTracker
 end
 
