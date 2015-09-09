@@ -4,11 +4,7 @@ require 'support/active_record'
 RSpec.describe RailsStuff::Statusable do
   let(:model) do
     described_class = self.described_class
-    Class.new(ActiveRecord::Base) do
-      def self.name
-        'User'
-      end
-
+    build_named_class :Customer, ActiveRecord::Base do
       extend described_class
       const_set(:STATUSES, %i(confirmed banned))
       has_status_field validate: false
@@ -188,12 +184,12 @@ RSpec.describe RailsStuff::Statusable do
 
   describe '.with_#{field}' do
     it 'filters records by field values' do
-      assert_filter('"users"."status" = ?', 'test') { model.with_status :test }
+      assert_filter('"customers"."status" = ?', 'test') { model.with_status :test }
     end
 
     context 'for custom field' do
       it 'filters records by field values' do
-        assert_filter('"users"."subscription_status" = ?', 'test') do
+        assert_filter('"customers"."subscription_status" = ?', 'test') do
           model.with_subscription_status :test
         end
       end
@@ -202,12 +198,12 @@ RSpec.describe RailsStuff::Statusable do
 
   describe '.#{status}' do
     it 'filters records by field values' do
-      assert_filter('"users"."status" = ?', 'confirmed') { model.confirmed }
+      assert_filter('"customers"."status" = ?', 'confirmed') { model.confirmed }
     end
 
     context 'for status with prefix' do
       it 'filters records by field value' do
-        assert_filter('"users"."subscription_status" = ?', 'pending') do
+        assert_filter('"customers"."subscription_status" = ?', 'pending') do
           model.subscription_pending
         end
       end
@@ -216,12 +212,12 @@ RSpec.describe RailsStuff::Statusable do
 
   describe '.not_#{status}' do
     it 'filters records by field values' do
-      assert_filter('"users"."status" != ?', 'confirmed') { model.not_confirmed }
+      assert_filter('"customers"."status" != ?', 'confirmed') { model.not_confirmed }
     end
 
     context 'for status with prefix' do
       it 'filters records by field value' do
-        assert_filter('"users"."subscription_status" != ?', 'pending') do
+        assert_filter('"customers"."subscription_status" != ?', 'pending') do
           model.not_subscription_pending
         end
       end

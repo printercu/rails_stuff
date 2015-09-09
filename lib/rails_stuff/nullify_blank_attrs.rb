@@ -1,3 +1,5 @@
+require 'active_support/core_ext/object/blank'
+
 module RailsStuff
   # Changes to `nil` assigned blank attributes.
   #

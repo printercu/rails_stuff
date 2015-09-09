@@ -1,7 +1,10 @@
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+require 'pathname'
 require 'pry'
 require 'rspec/its'
 
+GEM_ROOT = Pathname.new File.expand_path('../..', __FILE__)
+
+$LOAD_PATH.unshift GEM_ROOT.join('lib')
 require 'rails_stuff'
 
 RSpec.configure do |config|
@@ -66,5 +69,13 @@ RSpec.configure do |config|
   BigDecimal.class_eval do
     alias_method :inspect_orig, :inspect
     alias_method :inspect, :to_s
+  end
+end
+
+# Helper which builds class and defines name for it.
+def build_named_class(class_name, superclass = nil, &block)
+  Class.new(superclass || Object) do
+    define_singleton_method(:name) { class_name.try!(:to_s) }
+    class_eval(&block) if block
   end
 end

@@ -1,10 +1,17 @@
 AllCops:
   RunRailsCops: true
 
-Style/AlignParameters: {EnforcedStyle: with_fixed_indentation}
+Style/AlignParameters:
+  # Disable, till rubocop supports combination of styles.
+  # Use one of this styles where appropriate, keep it clean, compact and readable.
+  Enabled: false
+  EnforcedStyle:
+  - aligned
+  - with_fixed_indentation
 Style/ClosingParenthesisIndentation: {Enabled: false}
 Style/Documentation: {Enabled: false}
 Style/DotPosition: {EnforcedStyle: trailing}
+Style/IfUnlessModifier: {Enabled: false}
 Style/ModuleFunction: {Enabled: false}
 Style/MultilineOperationIndentation: {EnforcedStyle: indented}
 Style/PredicateName: {Enabled: false}
