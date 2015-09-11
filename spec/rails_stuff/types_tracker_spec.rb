@@ -9,11 +9,11 @@ RSpec.describe RailsStuff::TypesTracker do
   let(:child_2) { Class.new(base) }
 
   def with_list_class(klass)
-    old_klass = described_class.list_class
-    described_class.list_class = klass
+    old_klass = described_class.types_list_class
+    described_class.types_list_class = klass
     yield
   ensure
-    described_class.list_class = old_klass
+    described_class.types_list_class = old_klass
   end
 
   describe '#inherited' do

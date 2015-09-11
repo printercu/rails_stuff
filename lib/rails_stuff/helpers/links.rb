@@ -19,7 +19,7 @@ module RailsStuff
 
       def link_to_destroy(url, **options)
         link_to basic_link_icon(:destroy), url, {
-          title: translate_action(:delete),
+          title:  translate_action(:delete),
           method: :delete,
           data:   {confirm: translate_confirmation(:delete)},
         }.merge!(options)

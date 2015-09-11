@@ -10,16 +10,16 @@ module RailsStuff
     class << self
       def extended(base)
         base.class_attribute :types_list, instance_accessor: false
-        base.types_list = list_class.new
+        base.types_list = types_list_class.new
       end
 
       # Class for `types_list`. Default to `Array`. You can override it
       # for all models, or assign new value to specific model
       # via `lypes_list=` right after extending.
-      attr_accessor :list_class
+      attr_accessor :types_list_class
     end
 
-    self.list_class = Array
+    self.types_list_class = Array
 
     # Add `self` to `types_list`.
     def register_type(*args)
