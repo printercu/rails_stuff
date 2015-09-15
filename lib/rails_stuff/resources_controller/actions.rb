@@ -6,25 +6,25 @@ module RailsStuff
         build_resource
       end
 
-      def create(options = {})
+      def create(options = {}, &block)
         if create_resource
           options[:location] = after_save_url
         end
-        respond_with(resource, options)
+        respond_with(resource, options, &block)
       end
 
-      def update(options = {})
+      def update(options = {}, &block)
         if update_resource
           options[:location] = after_save_url
         end
-        respond_with(resource, options)
+        respond_with(resource, options, &block)
       end
 
-      def destroy(options = {})
+      def destroy(options = {}, &block)
         resource.destroy
         options[:location] = after_destroy_url
         flash_errors!
-        respond_with(resource, options)
+        respond_with(resource, options, &block)
       end
     end
   end
