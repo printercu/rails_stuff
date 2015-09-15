@@ -32,6 +32,8 @@ Collection of useful modules for Rails.
   key generation.
 - __[StrongParameters](#strongparameters)__
   `require_permitted` helper.
+- __UrlFor__
+  `#url_for_keeping_params` merges passed options with request's query params.
 
 #### Helpers:
 

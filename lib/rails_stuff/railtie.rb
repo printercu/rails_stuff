@@ -11,6 +11,7 @@ module RailsStuff
     ],
     sort_scope: -> { defined?(::HasScope) && :controller },
     strong_parameters: -> { defined?(ActionController::Parameters) && :require },
+    url_for_keeping_params: -> { defined?(ActionDispatch::Routing) && :require },
   }
 
   class << self
