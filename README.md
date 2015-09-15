@@ -30,6 +30,8 @@ Collection of useful modules for Rails.
 - __[RedisStorage](#redisstorage)__
   Simple way to store collections in key-value storage. With scoping and
   key generation.
+- __[StrongParameters](#strongparameters)__
+  `require_permitted` helper.
 
 #### Helpers:
 
@@ -291,6 +293,16 @@ Model.redis_set_options = {ex: 10}
 # generate ids:
 Model.next_id or Model.next_id(['composite', 'scope'])
 Model.reset_id_seq or Model.reset_id_seq(['composite', 'scope'])
+```
+
+### StrongParameters
+
+`#require_permitted` ensures that required values are scalar:
+
+```ruby
+params.require_permitted(:access_token, :refresh_token)
+# instead of
+params.permit(:access_token, :refresh_token).require(:access_token, :refresh_token)
 ```
 
 ### Helpers

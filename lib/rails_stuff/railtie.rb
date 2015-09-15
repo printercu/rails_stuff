@@ -10,6 +10,7 @@ module RailsStuff
       -> { ResourcesController.kaminari! if defined?(::Kaminari) },
     ],
     sort_scope: -> { defined?(::HasScope) && :controller },
+    strong_parameters: -> { defined?(ActionController::Parameters) && :require },
   }
 
   class << self
@@ -34,12 +35,13 @@ module RailsStuff
     def setup_modules!
       modules_to_load = load_modules || MODULES.keys
       MODULES.slice(*modules_to_load).each do |m, (type, init)|
-        m = const_get m.to_s.camelize
         case type.respond_to?(:call) ? type.call : type
         when :controller
-          RailsStuff.base_controller.extend m
+          RailsStuff.base_controller.extend const_get(m.to_s.camelize)
         when :model
-          RailsStuff.base_model.extend m
+          RailsStuff.base_model.extend const_get(m.to_s.camelize)
+        when :require
+          require "rails_stuff/#{m}"
         end
         init.try!(:call)
       end
