@@ -1,0 +1,25 @@
+// Foundation-style media queries.
+// Works with Bootstrap3 out of the box.
+// Without bootstrap just define variables:
+//   screen-xs-max, screen-{sm,md}-{min,max}, screen-lg-min
+//
+// Usage:
+//
+//   @media #{$sm-up} { ... }
+//   @media #{$sm-only} and #{$landscape} { ... }
+$screen: "only screen" !default;
+
+$landscape: "(orientation: landscape)" !default;
+$portrait: "(orientation: portrait)" !default;
+
+$xs-up: $screen !default;
+$xs-only: "(max-width: #{$screen-xs-max})" !default;
+
+$sm-up: "(min-width:#{$screen-sm-min})" !default;
+$sm-only: "(min-width:#{$screen-sm-min}) and (max-width:#{$screen-sm-max})" !default;
+
+$md-up: "(min-width:#{$screen-md-min})" !default;
+$md-only: "(min-width:#{$screen-md-min}) and (max-width:#{$screen-md-max})" !default;
+
+$lg-up: "(min-width:#{$screen-lg-min})" !default;
+$lg-only: "(min-width:#{$screen-lg-min})" !default;

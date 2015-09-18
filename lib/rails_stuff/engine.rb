@@ -49,7 +49,7 @@ module RailsStuff
     end
   end
 
-  class Railtie < Rails::Railtie
+  class Engine < Rails::Engine
     initializer :rails_stuff_setup_modules, after: :load_config_initializers do
       RailsStuff.setup_modules!
     end

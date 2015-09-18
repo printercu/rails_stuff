@@ -16,4 +16,4 @@ module RailsStuff
   autoload :TypesTracker
 end
 
-require 'rails_stuff/railtie' if defined?(Rails::Railtie)
+require 'rails_stuff/engine' if defined?(Rails::Engine)

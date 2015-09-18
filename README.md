@@ -47,7 +47,19 @@ Collection of useful modules for Rails.
 - __Forms__
   `hidden_params_fields` to bypass query params in GET-forms.
 
-__[Helpers usage](#helpers)__
+__[Helpers usage](#helpers-usage)__
+
+#### Test helpers:
+
+- __Response__
+  `#json_body` to test json responses.
+
+__[Test helpers usage](#test-helpers-usage)__
+
+#### Assets:
+
+- __MediaQueries__
+  `@media #{$sm-up} and #{$portrait} { ... }` queries for SASS.
 
 ## Installation
 
@@ -307,7 +319,7 @@ params.require_permitted(:access_token, :refresh_token)
 params.permit(:access_token, :refresh_token).require(:access_token, :refresh_token)
 ```
 
-### Helpers
+### Helpers usage
 
 Include helper module into `ApplicationHelper`.
 Or use `RailsStuff::Helpers::All` to include all helpers together.
@@ -341,6 +353,27 @@ link_to_destroy or link_to_destroy('url') or link_to_destroy([:scope, resource])
 Translation helpers are cached, so there is no need to cache it by yourself in
 template if you want to decrease computations. And be aware of it if you
 switch locales while rendering single view.
+
+### Test helpers usage
+
+Add `require 'rails_stuff/test_helpers/rails'` to `test_helper.rb`.
+
+```ruby
+assert_equal({'id' => 1, 'name' => 'John'}, response.json_body)
+assert_equal('John', response.json_body['name'])
+assert_equal('John', response.json_body.name)
+
+# with rspec-its
+subject { get :show, id: resource.id }
+its(:json_body) { should include 'id' => 1 }
+its('json_body.name') { should eq 'John' }
+```
+
+`.json_body` helper requires `gem 'hashie'`.
+
+Note that `hashie` conflicts with `Hash` methods, so `.json_body.key` or
+`.json_body.hash` will not work as expected (or at all).
+Use `json_body['key']` instead.
 
 ## Development
 
