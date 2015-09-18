@@ -60,6 +60,8 @@ __[Test helpers usage](#test-helpers-usage)__
 
 - __MediaQueries__
   `@media #{$sm-up} and #{$portrait} { ... }` queries for SASS.
+- __[PluginManager](#pluginmanager)__
+  Simple way to create jQuery plugins using classes.
 
 ## Installation
 
@@ -374,6 +376,30 @@ its('json_body.name') { should eq 'John' }
 Note that `hashie` conflicts with `Hash` methods, so `.json_body.key` or
 `.json_body.hash` will not work as expected (or at all).
 Use `json_body['key']` instead.
+
+### PluginManager
+
+Provides simple way to create jQuery plugins. Create class and PluginManager
+will create jQuery function for it. It'll create instance of class for each
+jQuery element and prevent calling constructor twice.
+
+```coffee
+PluginManager.add 'myPlugin', class
+  constructor: (@$element, @options) ->
+     # ...
+
+  customAction: (options)->
+     # ...
+
+  # Add initializers
+  $ -> $('[data-my-plugin]').myPlugin()
+  # or
+  $(document).on 'click', '[data-my-plugin]', (e) ->
+    $(@).myPlugin('customAction', event: e)
+
+# Or use it manually
+$('.selector').myPlugin().myPlugin('customAction')
+```
 
 ## Development
 
