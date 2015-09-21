@@ -18,4 +18,6 @@ group :development do
   gem 'rspec-rails', '~> 3.3.3'
 
   gem 'rubocop', '~> 0.33.0'
+
+  gem 'coveralls', '~> 0.8.2', require: false
 end

@@ -2,6 +2,14 @@ require 'pathname'
 require 'pry'
 require 'rspec/its'
 
+if ENV['CI']
+  require 'coveralls'
+  Coveralls.wear!
+elsif ENV.key?('COV')
+  require 'simplecov'
+  SimpleCov.start
+end
+
 GEM_ROOT = Pathname.new File.expand_path('../..', __FILE__)
 
 $LOAD_PATH.unshift GEM_ROOT.join('lib')
