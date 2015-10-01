@@ -37,9 +37,11 @@ module RailsStuff
               msg = f.object.errors[:base].first
               html << content_tag(:div, msg, class: 'alert alert-danger') if msg
               html << capture { yield(f) }
-              html << f.button(:submit, class: 'btn-primary')
-              html << ' '
-              html << link_to(translate_action(:cancel), back_url, class: :btn)
+              html << content_tag(:div, class: 'form-group') do
+                inputs = f.button(:submit, class: 'btn-primary')
+                inputs << ' '
+                inputs << link_to(translate_action(:cancel), back_url, class: :btn)
+              end
             end
           end
         RUBY
