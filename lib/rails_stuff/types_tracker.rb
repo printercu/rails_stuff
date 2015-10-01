@@ -11,6 +11,7 @@ module RailsStuff
       def extended(base)
         base.class_attribute :types_list, instance_accessor: false
         base.types_list = types_list_class.new
+        base.instance_variable_set(:@_types_tracker_base, base)
       end
 
       # Class for `types_list`. Default to `Array`. You can override it
@@ -21,16 +22,22 @@ module RailsStuff
 
     self.types_list_class = Array
 
-    # Add `self` to `types_list`.
+    # Add `self` to `types_list`. Defines scope for ActiveRecord models.
     def register_type(*args)
       if types_list.respond_to?(:add)
         types_list.add self, *args
       else
         types_list << self
       end
+      if types_tracker_base.respond_to?(:scope) && # rubocop:disable GuardClause
+          !types_tracker_base.respond_to?(model_name.element)
+        type_name = name
+        types_tracker_base.scope model_name.element, -> { where(type: type_name) }
+      end
     end
 
-    # Remove `self` from `types_list`.
+    # Remove `self` from `types_list`. It doesnt remove generated scope
+    # from ActiveRecord models, 'cause it potentialy can remove other methods.
     def unregister_type
       types_list.delete self
     end
@@ -45,6 +52,11 @@ module RailsStuff
     def inherited(base)
       super
       base.register_type
+    end
+
+    # Class that was initilly extended with TypesTracker.
+    def types_tracker_base
+      @_types_tracker_base || superclass.types_tracker_base
     end
   end
 end

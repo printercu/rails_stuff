@@ -80,6 +80,7 @@ RSpec.configure do |config|
   end
 end
 
+require 'active_support/core_ext/object/try'
 # Helper which builds class and defines name for it.
 def build_named_class(class_name, superclass = nil, &block)
   Class.new(superclass || Object) do

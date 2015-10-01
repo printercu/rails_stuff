@@ -4,6 +4,7 @@ gemspec
 group :development do
   gem 'sdoc', '~> 0.4.1'
   gem 'pry', '~> 0.10.1'
+  gem 'pry-byebug', '~> 3.2.0'
 
   gem 'sqlite3', '~> 1.3.10'
   gem 'database_cleaner', '~> 1.5.0'

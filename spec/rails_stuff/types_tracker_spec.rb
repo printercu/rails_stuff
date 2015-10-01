@@ -1,3 +1,5 @@
+require 'active_record'
+
 RSpec.describe RailsStuff::TypesTracker do
   let(:base) do
     described_class = self.described_class
@@ -14,6 +16,19 @@ RSpec.describe RailsStuff::TypesTracker do
     yield
   ensure
     described_class.types_list_class = old_klass
+  end
+
+  # Can't do this with stubbing, 'cause class name is used before it's stubbed.
+  module TypesTrackerTest
+    class Project < ActiveRecord::Base
+      extend RailsStuff::TypesTracker
+
+      class Internal < self
+        class Smth < self; end
+      end
+
+      class ModelName < self; end
+    end
   end
 
   describe '#inherited' do
@@ -37,6 +52,18 @@ RSpec.describe RailsStuff::TypesTracker do
       child.unregister_type
       expect { child.register_type }.
         to change { base.types_list }.from([]).to([child])
+    end
+
+    context 'for activerecord model' do
+      it 'adds scope' do
+        expect(TypesTrackerTest::Project).to respond_to :internal
+        expect(TypesTrackerTest::Project).to respond_to :smth
+      end
+
+      it 'doesnt override methods with scope' do
+        TypesTrackerTest::Project::ModelName.register_type
+        expect(TypesTrackerTest::Project.model_name).to be_instance_of ActiveModel::Name
+      end
     end
 
     context 'when types_list has #add method' do

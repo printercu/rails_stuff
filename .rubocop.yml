@@ -19,6 +19,6 @@ Style/SignalException: {EnforcedStyle: only_raise}
 Style/SpaceInsideHashLiteralBraces: {EnforcedStyle: no_space}
 Style/TrailingComma: {Enabled: false}
 
-Metrics/AbcSize: {Max: 19}
+Metrics/AbcSize: {Max: 21}
 Metrics/LineLength: {Max: 100}
 Metrics/MethodLength: {Max: 30}

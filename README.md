@@ -258,6 +258,9 @@ class Project::External < Project::Big; end
 class Project::Small < Project; end
 
 Project.types_list # [Internal, External, Small]
+
+# Scopes for each type:
+Project.internal or Project.big
 ```
 
 ### ParamsParser

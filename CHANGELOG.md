@@ -1,3 +1,7 @@
+## 0.4.0
+
+- TypesTracker defines scopes for every type.
+
 ## 0.3.0
 
 - PluginManager & media queries.
