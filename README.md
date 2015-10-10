@@ -104,7 +104,7 @@ check docs & code (press `t` on github) if you miss something.
 
 ### ResourcesController
 
-Similar to [InheriteResource](https://github.com/josevalim/inherited_resources)
+Similar to [InheritedResource](https://github.com/josevalim/inherited_resources)
 but much simpler. It adds implementations for basic actions and
 accessors for collection and resource. There is no options for almost everything,
 but it's easy to extend.
@@ -194,7 +194,7 @@ end
 
 ```ruby
 class User < ActiveRecord::Base
-  extend RailsStuff::RandomUniqAttr # when using without railtie
+  extend RailsStuff::Statusable # when using without railtie
 
   STATUSES = %i(confirmed banned)
   has_status_field # uses #status field and STATUSES as values
