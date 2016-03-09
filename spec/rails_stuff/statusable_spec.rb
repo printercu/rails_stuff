@@ -175,8 +175,8 @@ RSpec.describe RailsStuff::Statusable do
     end
   end
 
-  def assert_filter(*expected, &block)
-    relation = block.call
+  def assert_filter(*expected)
+    relation = yield
     where_sql = relation.where_values.map(&:to_sql).join
     values_sql = relation.bind_values.map(&:second).join
     expect([where_sql, values_sql]).to eq(expected)

@@ -29,7 +29,7 @@ module RailsStuff
       else
         types_list << self
       end
-      if types_tracker_base.respond_to?(:scope) && # rubocop:disable GuardClause
+      if types_tracker_base.respond_to?(:scope) &&
           !types_tracker_base.respond_to?(model_name.element)
         type_name = name
         types_tracker_base.scope model_name.element, -> { where(type: type_name) }

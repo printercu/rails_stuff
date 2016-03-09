@@ -1,23 +1,26 @@
-AllCops:
-  RunRailsCops: true
+Rails: {Enabled: true}
 
+Style/Alias: {Enabled: false}
 Style/AlignParameters:
   # Disable, till rubocop supports combination of styles.
   # Use one of this styles where appropriate, keep it clean, compact and readable.
   Enabled: false
-  EnforcedStyle:
-  - aligned
-  - with_fixed_indentation
+  # EnforcedStyle:
+  # - with_first_parameter
+  # - with_fixed_indentation
 Style/ClosingParenthesisIndentation: {Enabled: false}
 Style/Documentation: {Enabled: false}
 Style/DotPosition: {EnforcedStyle: trailing}
 Style/IfUnlessModifier: {Enabled: false}
 Style/ModuleFunction: {Enabled: false}
+Style/MultilineMethodCallIndentation: {EnforcedStyle: indented}
 Style/MultilineOperationIndentation: {EnforcedStyle: indented}
+Style/NestedParenthesizedCalls: {Enabled: false}
 Style/PredicateName: {Enabled: false}
 Style/SignalException: {EnforcedStyle: only_raise}
 Style/SpaceInsideHashLiteralBraces: {EnforcedStyle: no_space}
-Style/TrailingComma: {Enabled: false}
+Style/TrailingCommaInArguments: {Enabled: false}
+Style/TrailingCommaInLiteral: {EnforcedStyleForMultiline: comma}
 
 Metrics/AbcSize: {Max: 21}
 Metrics/LineLength: {Max: 100}

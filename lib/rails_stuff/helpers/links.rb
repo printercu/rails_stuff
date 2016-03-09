@@ -2,7 +2,7 @@ module RailsStuff
   module Helpers
     # Link helpers for basic actions.
     module Links
-      ICONS = {
+      ICONS = { # rubocop:disable MutableConstant
         destroy:  -> { translate_action(:destroy) },
         edit:     -> { translate_action(:edit) },
         new:      -> { translate_action(:new) },

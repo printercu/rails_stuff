@@ -42,7 +42,7 @@ class User < ActiveRecord::Base
   DEFAULT_ATTRS = {
     name: 'John',
     email: 'john@example.domain',
-  }
+  }.freeze
   extend BuildDefault
 end
 
@@ -54,7 +54,7 @@ class Project < ActiveRecord::Base
   DEFAULT_ATTRS = {
     name: 'Haps.me',
     type: 'Project::External',
-  }
+  }.freeze
   extend BuildDefault
 
   class Internal < self

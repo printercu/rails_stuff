@@ -18,7 +18,7 @@ group :development do
   gem 'rspec-its', '~> 1.1.0'
   gem 'rspec-rails', '~> 3.3.3'
 
-  gem 'rubocop', '~> 0.33.0'
+  gem 'rubocop', '~> 0.37.2'
 
   gem 'coveralls', '~> 0.8.2', require: false
 end

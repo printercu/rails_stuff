@@ -15,7 +15,7 @@ RSpec.describe RailsStuff::Helpers::Translation do
       yes_no: {
         'true' => 'yeah',
         'false' => 'nope',
-      }
+      },
     }
   end
 

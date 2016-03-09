@@ -34,7 +34,7 @@ module RailsStuff
       self.responder = Responder
       self.after_save_action = options[:after_save_action] || after_save_action
 
-      if options[:source_relation] # rubocop:disable GuardClause
+      if options[:source_relation]
         protected define_method(:source_relation, &options[:source_relation])
       end
     end

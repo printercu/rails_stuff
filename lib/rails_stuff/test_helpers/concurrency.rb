@@ -55,7 +55,7 @@ module RailsStuff
       #    # It'll automatically wrap single args into Array:
       #    concurrently(1, 2, {opt: true}, {opt: false}, [1, opt: false]) { ... }
       #
-      def concurrently(thread_args = nil, &block)
+      def concurrently(thread_args = nil)
         thread_args ||= Concurrency.threads_count
         threads =
           case thread_args

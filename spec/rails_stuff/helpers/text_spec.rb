@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe RailsStuff::Helpers::Text, type: :helper do
   describe '#replace_blank' do
     before { expect(I18n).to receive(:t) { :blank } }
-    let(:placeholder) { "<small class=\"text-muted\">(blank)</small>" }
+    let(:placeholder) { '<small class="text-muted">(blank)</small>' }
 
     it 'replaces blank values with translated placeholder' do
       expect(helper.replace_blank('')).to eq placeholder

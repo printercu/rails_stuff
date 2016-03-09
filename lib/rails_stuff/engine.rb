@@ -1,7 +1,7 @@
 require 'rails/railtie'
 
 module RailsStuff
-  MODULES = {
+  MODULES = { # rubocop:disable MutableConstant
     nullify_blank_attrs:  :model,
     random_uniq_attr:     :model,
     statusable:           :model,
