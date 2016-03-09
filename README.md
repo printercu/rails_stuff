@@ -53,6 +53,10 @@ __[Helpers usage](#helpers-usage)__
 
 - __Response__
   `#json_body` to test json responses.
+- __Configurator__
+  Provides useful basic configuration for RSpec.
+- __Concurrency__
+  Helpers for testing with concurrent requests.
 
 __[Test helpers usage](#test-helpers-usage)__
 
