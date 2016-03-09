@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = 'rails_stuff'
   spec.version       = RailsStuff::VERSION::STRING
   spec.authors       = ['Max Melentiev']
-  spec.email         = ['m.melentiev@corp.mail.ru']
+  spec.email         = ['melentievm@gmail.com']
 
   spec.summary       = 'Collection of useful modules for Rails'
   spec.homepage      = 'https://github.com/printercu/rails_stuff'
