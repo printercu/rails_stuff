@@ -10,6 +10,7 @@ module RailsStuff
           define_method(:source_for_collection) do
             source_relation.page(params[:page]).per(params[:per])
           end
+          protected :source_for_collection
         end
       end
 

@@ -155,4 +155,9 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
       it { should be_not_found }
     end
   end
+
+  describe '#action_methods' do
+    subject { controller.action_methods }
+    it { should_not include 'source_for_collection' }
+  end
 end
