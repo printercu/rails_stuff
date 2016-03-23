@@ -1,7 +1,7 @@
 require 'activemodel_translation/helper'
 require 'support/active_record'
 
-RSpec.describe RailsStuff::Statusable do
+RSpec.describe RailsStuff::Statusable, :db_cleaner do
   let(:model) do
     described_class = self.described_class
     build_named_class :Customer, ActiveRecord::Base do

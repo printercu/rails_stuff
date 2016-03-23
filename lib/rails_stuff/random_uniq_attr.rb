@@ -10,6 +10,7 @@ module RailsStuff
   #
   module RandomUniqAttr
     DEFAULT_GENERATOR = ->(*) { SecureRandom.hex(32) }
+    MAX_ATTEMPTS = 10
 
     class << self
       # Made from `Devise.firendly_token` with increased length.
@@ -23,9 +24,10 @@ module RailsStuff
     #
     #     random_uniq_attr(:code) { |instance| my_random(instance) }
     #
-    def random_uniq_attr(field, &block)
+    def random_uniq_attr(field, **options, &block)
       set_method = :"set_#{field}"
       generate_method = :"generate_#{field}"
+      max_attempts = options.fetch(:max_attempts) { MAX_ATTEMPTS }
 
       after_create set_method, unless: :"#{field}?"
 
@@ -34,12 +36,15 @@ module RailsStuff
 
       # def set_key
       define_method(set_method) do
+        attempt = 0
         begin
           raise 'Available only for persisted record' unless persisted?
           transaction(requires_new: true) do
             update_column field, self.class.send(generate_method, self)
           end
         rescue ActiveRecord::RecordNotUnique
+          attempt += 1
+          raise if attempt > max_attempts
           retry
         end
       end

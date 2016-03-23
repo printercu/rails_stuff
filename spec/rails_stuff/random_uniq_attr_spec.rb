@@ -1,6 +1,6 @@
 require 'support/active_record'
 
-RSpec.describe RailsStuff::RandomUniqAttr do
+RSpec.describe RailsStuff::RandomUniqAttr, :db_cleaner do
   let(:model) do
     described_class = self.described_class
     attr = self.attr
@@ -21,15 +21,20 @@ RSpec.describe RailsStuff::RandomUniqAttr do
     let(:instance) { create_instance }
 
     context 'when instance with same generated attr value exists' do
+      let(:values) { ([:test_2] + [other_instance[attr]] * 5).map(&:to_s) }
       before do
-        values = ([:test_2] + [other_instance[attr]] * 5).map(&:to_s)
-        allow(other_instance.class).
-          to receive("generate_#{attr}") { values.pop }.exactly(values.length).times
+        other_instance
+        allow(other_instance.class).to receive("generate_#{attr}") { values.pop }.times
       end
 
       it 'generates new value until it is unique' do
         expect(instance[attr]).to eq('test_2')
         expect(instance.reload[attr]).to eq('test_2')
+      end
+
+      context 'when uniq value can not be generated' do
+        let(:values) { double(:values, pop: other_instance[attr]) }
+        it { expect { instance }.to raise_error ActiveRecord::RecordNotUnique }
       end
     end
 
