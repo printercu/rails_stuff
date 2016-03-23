@@ -39,6 +39,22 @@ module RailsStuff
         config.before { |ex| config.redis.flushdb if ex.metadata[:flush_redis] }
         config.after(:suite) { config.redis.flushdb }
       end
+
+      # Runs debugger after each failed example. Uses `pry` by default and
+      # runs only for examples with `:debug` tag. This can be configured
+      # with `:debugger` and `:filter` options respectively:
+      #
+      #   configurator.debug(config, filter: {my_tag: :val}, debugger: true)
+      #   # to disable filter:
+      #   configurator.debug(config, filter: nil)
+      def debug(config, filter: {debug: true}, debugger: :pry)
+        config.after(filter) do |ex|
+          if ex.exception
+            debugger == :pry ? binding.pry : self.debugger # rubocop:disable Debugger
+            ex.exception # noop
+          end
+        end
+      end
     end
   end
 end

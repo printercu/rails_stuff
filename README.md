@@ -384,6 +384,21 @@ Note that `hashie` conflicts with `Hash` methods, so `.json_body.key` or
 `.json_body.hash` will not work as expected (or at all).
 Use `json_body['key']` instead.
 
+There is `Configurator` with useful RSpec configs:
+
+```ruby
+RSpec.configure do |config|
+  RailsStuff::TestHelpers::Configurator.tap do |configurator|
+    # Setup DatabaseCleaner with basic settings:
+    configurator.database_cleaner(config)
+    # Flush redis after suite and exampes with `flush_redis: true`:
+    configurator.redis(config)
+    # Run debugger after failed tests:
+    configurator.debug(config)
+  end
+end
+```
+
 ### PluginManager
 
 Provides simple way to create jQuery plugins. Create class and PluginManager
