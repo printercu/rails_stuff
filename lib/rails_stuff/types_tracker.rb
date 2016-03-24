@@ -1,4 +1,5 @@
 require 'active_support/core_ext/class/attribute'
+require 'active_support/deprecation'
 
 module RailsStuff
   # Adds `types_list` method which tracks all descendants.
@@ -44,9 +45,12 @@ module RailsStuff
 
     # Shortcut to eager load all descendants.
     def eager_load_types!(dir = nil)
-      dir ||= "#{Rails.root}/app/models/#{to_s.underscore}"
-      Dir["#{dir}/*.rb"].each { |file| require_dependency file }
+      RequireNested.require_nested(dir || 2) # skip 1 more because of deprecation
     end
+
+    ActiveSupport::Deprecation.deprecate_methods self,
+      deprecator: ActiveSupport::Deprecation.new('0.6', 'RailsStuff'),
+      eager_load_types!: 'Use RequireNested.require_nested instead'
 
     # Tracks all descendants automatically.
     def inherited(base)

@@ -34,6 +34,8 @@ Collection of useful modules for Rails.
   `require_permitted` helper.
 - __UrlFor__
   `#url_for_keeping_params` merges passed options with request's query params.
+- __[RequireNested](#requirenested)__
+  helper to load files in subdirectory.
 
 #### Helpers:
 
@@ -250,9 +252,7 @@ class Project
 
   # If you want to show all available descendants in development
   # (ex. in dropdown/select), you definitely want this:
-  eager_load_types! # will load all files in app/models/project
-  # or pass folder explicitly:
-  eager_load_types!('lib/path/to/projects')
+  require_nested # will load all .rb files in app/models/project
 end
 
 class Project::Big < Project
@@ -332,6 +332,21 @@ Model.reset_id_seq or Model.reset_id_seq(['composite', 'scope'])
 params.require_permitted(:access_token, :refresh_token)
 # instead of
 params.permit(:access_token, :refresh_token).require(:access_token, :refresh_token)
+```
+
+### RequireNested
+
+```ruby
+class Project < ApplicationRecord
+  # To load all files in app/models/project with require_dependency:
+  require_nested
+  # or pass folder explicitly:
+  require_nested('lib/path/to/projects')
+
+  # For non-rails apps use
+  RailsStuff::RequireNested.require_nested
+  # or call RailsStuff::RequireNested.setup to add #require_nested to Module
+end
 ```
 
 ### Helpers usage

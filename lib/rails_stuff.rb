@@ -10,9 +10,10 @@ module RailsStuff
   autoload :ParamsParser
   autoload :RandomUniqAttr
   autoload :RedisStorage
+  autoload :RequireNested
   autoload :ResourcesController
-  autoload :Statusable
   autoload :SortScope
+  autoload :Statusable
   autoload :TypesTracker
 end
 
