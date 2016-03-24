@@ -96,15 +96,21 @@ module RailsStuff
       def after_save_url
         action = self.class.after_save_action
         if action == :index
-          url_for action: :index
+          index_url
         else
           url_for action: action, id: resource
         end
       end
 
       # URL to be used in `Location` header & to redirect after
-      # resource was destroyed. Default to `:index` action.
+      # resource was destroyed. Default to #index_url.
       def after_destroy_url
+        index_url
+      end
+
+      # Extracted from #after_save_url and #after_destroy_url because they use
+      # same value. It's easier to override this urls in one place.
+      def index_url
         url_for action: :index
       end
 

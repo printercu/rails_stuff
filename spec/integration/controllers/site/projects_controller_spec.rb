@@ -8,7 +8,8 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :controller do
   let(:controller_resource) { controller.send :resource }
 
   describe '#index' do
-    subject { get :index, user_id: user.id }
+    subject { get :index, params }
+    let(:params) { {user_id: user.id} }
     before { resource && other_resource }
 
     it 'renders index, and limits collection to parent`s resources' do
@@ -17,7 +18,7 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :controller do
     end
 
     context 'when pagination params are given' do
-      subject { get :index, user_id: user.id, page: 10, per: 2 }
+      let(:params) { {user_id: user.id, page: 10, per: 2} }
       it 'paginates collection' do
         should render_template :index
         collection = controller.send(:collection)
@@ -27,7 +28,7 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :controller do
     end
 
     context 'when parent is not found' do
-      subject { get :index, user_id: -1 }
+      let(:params) { {user_id: -1} }
       render_views
       it { should be_not_found }
     end
@@ -54,13 +55,15 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :controller do
           'department' => 'D',
           'company' => nil,
         )
-        should redirect_to site_user_projects_path(user)
+        should redirect_to site_project_path(resource)
       end
 
       it 'respects per-type allowed attributes' do
         resource_params[:type] = 'Project::External'
-        should redirect_to site_user_projects_path(user)
-        expect(user.projects.last.attributes).to include(
+        should be_redirect
+        resource = user.projects.last
+        should redirect_to site_project_path(resource)
+        expect(resource.attributes).to include(
           'name' => 'New project',
           'department' => nil,
           'company' => 'C',
@@ -115,14 +118,14 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :controller do
             'company' => 'C',
             'type' => 'Project::External',
           )
-        should redirect_to site_user_projects_path(user)
+        should redirect_to site_project_path(user)
       end
 
       context 'when resource is of other type' do
         let(:resource) { super().becomes!(Project::Internal).tap(&:save!) }
 
         it 'respects per-type allowed attributes' do
-          expect { should redirect_to site_user_projects_path(user) }.
+          expect { should redirect_to site_project_path(user) }.
             to change { resource.reload.attributes.slice(*%w(name department company type)) }.
             to(
               'name' => 'New project',
@@ -149,5 +152,11 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :controller do
         )
       end
     end
+  end
+
+  describe '#destroy' do
+    subject { -> { delete :destroy, id: resource.id } }
+    it { should change { resource.class.exists?(resource.id) }.to false }
+    its(:call) { should redirect_to site_user_projects_path(user) }
   end
 end

@@ -11,7 +11,7 @@ TestRoutes = ActionDispatch::Routing::RouteSet.new
 TestRoutes.draw do
   namespace :site do
     resources :users do
-      resources :projects, only: [:index, :create, :update], shallow: true
+      resources :projects, shallow: true
     end
   end
 end
@@ -88,24 +88,15 @@ module Site
   end
 
   class ProjectsController < SiteController
-    resources_controller sti: true, kaminari: true
-    resource_helper :user
+    resources_controller  sti: true,
+                          kaminari: true,
+                          belongs_to: [:user, optional: true]
     permit_attrs :name
     permit_attrs_for Project::External, :company
     permit_attrs_for Project::Internal, :department
 
     def create
       super(action: :index)
-    end
-
-    protected
-
-    def after_save_url
-      url_for action: :index, user_id: resource.user_id
-    end
-
-    def source_relation
-      params.key?(:user_id) ? user.projects : self.class.resource_class
     end
   end
 end

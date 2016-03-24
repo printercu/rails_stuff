@@ -9,6 +9,7 @@ module RailsStuff
 
     autoload :Actions
     autoload :BasicHelpers
+    autoload :BelongsTo
     autoload :HasScopeHelpers
     autoload :KaminariHelpers
     autoload :ResourceHelper
@@ -25,6 +26,7 @@ module RailsStuff
         base.include Actions
         base.extend HasScopeHelpers
         base.extend ResourceHelper
+        base.extend BelongsTo
       end
     end
 
@@ -43,6 +45,7 @@ module RailsStuff
       self.responder = Responder
       self.after_save_action = options[:after_save_action] || after_save_action
 
+      resource_belongs_to(*options[:belongs_to]) if options[:belongs_to]
       if options[:source_relation]
         protected define_method(:source_relation, &options[:source_relation])
       end

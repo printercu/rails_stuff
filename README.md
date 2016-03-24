@@ -131,14 +131,20 @@ class ProjectsController < ApplicationController
     after_save_action: :index,
     source_relation: -> { user.projects }
   resource_helper :user
+
+  # or just
+  resources_controller sti: true,
+    after_save_action: :index,
+    belongs_to: :user
+    # `belongs_to: [:user, optional: true]` for shallow routes
+
   permit_attrs :name
   permit_attrs_for Project::External, :company
   permit_attrs_for Project::Internal, :department
 end
 ```
 
-There is built-in support for pagination with Kaminari.
-It's enabled automatically if `kaminari` gem is loaded.
+There is built-in support for `has_scope` gem and pagination with Kaminari.
 
 Currently depends on `gem 'responders', '> 2.0'`.
 
