@@ -3,8 +3,8 @@ require 'rails/engine'
 require 'rails/railtie'
 require 'support/active_record'
 require 'kaminari'
+require 'has_scope'
 Kaminari::Hooks.init
-RailsStuff::ResourcesController.kaminari!
 
 # # Routes
 TestRoutes = ActionDispatch::Routing::RouteSet.new
@@ -38,6 +38,7 @@ end
 class User < ActiveRecord::Base
   has_many :projects
   validates_presence_of :name, :email
+  scope :by_email, ->(val) { where(email: val) }
 
   DEFAULT_ATTRS = {
     name: 'John',
@@ -81,12 +82,13 @@ end
 
 module Site
   class UsersController < SiteController
-    resources_controller
+    resources_controller kaminari: true
     permit_attrs :name, :email
+    has_scope :by_email
   end
 
   class ProjectsController < SiteController
-    resources_controller sti: true
+    resources_controller sti: true, kaminari: true
     resource_helper :user
     permit_attrs :name
     permit_attrs_for Project::External, :company

@@ -7,28 +7,37 @@ module RailsStuff
   module ResourcesController
     extend ActiveSupport::Autoload
 
-    class << self
-      delegate :kaminari!, to: 'RailsStuff::ResourcesController::BasicHelpers'
-    end
-
     autoload :Actions
     autoload :BasicHelpers
+    autoload :HasScopeHelpers
+    autoload :KaminariHelpers
+    autoload :ResourceHelper
     autoload :Responder
     autoload :StiHelpers
-    autoload :ResourceHelper
+
+    extend KaminariHelpers::ConfigMethods
+
+    class << self
+      def inject(base, **options)
+        base.include BasicHelpers
+        base.include KaminariHelpers if options.fetch(:kaminari) { use_kaminari? }
+        base.include StiHelpers if options[:sti]
+        base.include Actions
+        base.extend HasScopeHelpers
+        base.extend ResourceHelper
+      end
+    end
 
     # Setups basic actions and helpers in resources controller.
     #
     # #### Options
     #
     # - `sti` - include STI helpers
+    # - `kaminari` - include Kaminari helpers
     # - `after_save_action` - action to use for `after_save_url`
     # - `source_relation` - override `source_relation`
     def resources_controller(**options)
-      include BasicHelpers
-      include StiHelpers if options[:sti]
-      include Actions
-      extend ResourceHelper
+      ResourcesController.inject(self, **options)
 
       respond_to :html
       self.responder = Responder

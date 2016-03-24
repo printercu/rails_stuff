@@ -7,7 +7,7 @@ module RailsStuff
     statusable:           :model,
     resources_controller: [
       :controller,
-      -> { ResourcesController.kaminari! if defined?(::Kaminari) },
+      -> { ResourcesController.use_kaminari! if defined?(::Kaminari) },
     ],
     sort_scope: -> { defined?(::HasScope) && :controller },
     strong_parameters: -> { defined?(ActionController::Parameters) && :require },

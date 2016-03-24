@@ -1,19 +1,20 @@
 RSpec.describe RailsStuff::ResourcesController do
   describe '#resources_controller' do
-    subject { ->(*args) { klass.resources_controller(*args) } }
+    subject { ->(options = self.options) { klass.resources_controller(**options) } }
+    let(:options) { {} }
     let(:klass) do
       described_class = self.described_class
       Class.new(ActionController::Base) { extend described_class }
     end
     let(:instance) { klass.new }
-
-    it 'adds modules' do
-      should change { klass.ancestors }.by [
+    let(:basic_modules) do
+      [
         described_class::Actions,
         described_class::BasicHelpers,
       ]
     end
 
+    it { should change { klass.ancestors }.by basic_modules }
     it { should change { klass.responder }.to described_class::Responder }
 
     context 'when :source_relation is given' do
@@ -31,13 +32,15 @@ RSpec.describe RailsStuff::ResourcesController do
     end
 
     context 'when :sti is true' do
-      it 'sets it' do
-        expect { subject.call sti: true }.to change { klass.ancestors }.by [
-          described_class::Actions,
-          described_class::StiHelpers,
-          described_class::BasicHelpers,
-        ]
-      end
+      let(:options) { {sti: true} }
+      let(:expected_ancestors) { basic_modules.insert(1, described_class::StiHelpers) }
+      it { should change { klass.ancestors }.by expected_ancestors }
+    end
+
+    context 'when :kaminari is true' do
+      let(:options) { {kaminari: true} }
+      let(:expected_ancestors) { basic_modules.insert(1, described_class::KaminariHelpers) }
+      it { should change { klass.ancestors }.by expected_ancestors }
     end
   end
 end

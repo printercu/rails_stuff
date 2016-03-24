@@ -2,24 +2,43 @@ require 'integration_helper'
 
 RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
   let(:resource) { User.create_default! }
+  let(:other_resource) { User.create_default!(email: 'other@example.com') }
   let(:controller_resource) { controller.send :resource }
 
   describe '#index' do
-    subject { get :index }
-    before { resource }
+    subject { get :index, params }
+    let(:params) { {} }
+    let(:collection) do
+      should render_template :index
+      controller.send(:collection)
+    end
+    let!(:resources) { [resource, other_resource] }
 
     it 'renders index' do
-      should render_template :index
-      expect(controller.send(:collection).all.to_a).to eq [resource]
+      expect(collection.all.to_a).to eq resources
     end
 
     context 'when pagination params are given' do
-      subject { get :index, page: 10, per: 2 }
+      let(:params) { {page: 10, per: 2} }
       it 'paginates collection' do
-        should render_template :index
-        collection = controller.send(:collection)
         expect(collection.offset_value).to eq 18
         expect(collection.limit_value).to eq 2
+      end
+
+      context 'and param for has_scope is given' do
+        let(:params) { super().merge(by_email: resource.email, page: 1) }
+        it 'paginates & filters collection' do
+          expect(collection.all.to_a).to eq [resource]
+          expect(collection.offset_value).to eq 0
+          expect(collection.limit_value).to eq 2
+        end
+      end
+    end
+
+    context 'when param for has_scope is given' do
+      let(:params) { {by_email: resource.email} }
+      it 'filters collection' do
+        expect(collection.all.to_a).to eq [resource]
       end
     end
   end

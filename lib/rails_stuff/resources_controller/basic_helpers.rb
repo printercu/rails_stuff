@@ -3,17 +3,6 @@ module RailsStuff
     module BasicHelpers
       extend ActiveSupport::Concern
 
-      class << self
-        # Make source_for_collection use Kaminari-style scopes
-        # to paginate relation.
-        def kaminari!
-          define_method(:source_for_collection) do
-            source_relation.page(params[:page]).per(params[:per])
-          end
-          protected :source_for_collection
-        end
-      end
-
       included do
         helper_method :resource, :collection
         self.after_save_action = :show
@@ -50,17 +39,6 @@ module RailsStuff
         # Concats `@permitted_attrs` variable with given attrs.
         def permit_attrs(*attrs)
           permitted_attrs.concat attrs
-        end
-
-        # This method overrides default `has_scope`. It calls default implementation
-        # and overrides `collection` to use `apply_scope`.
-        def has_scope(*)
-          super.tap do
-            define_method :collection do
-              @_collection ||= apply_scopes(source_for_collection)
-            end
-            protected :collection
-          end
         end
 
         # Prevent CanCan's implementation.
