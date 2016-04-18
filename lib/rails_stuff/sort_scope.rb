@@ -31,6 +31,7 @@ module RailsStuff
       default = config[:default] || :id
       allowed = Array.wrap(config[:by]).map(&:to_s)
       only_actions = config.fetch(:only, :index)
+      order_method = config.fetch(:order_method, :order)
       # Counter added into scope name to allow to define multiple scopes in same controller.
       has_scope("sort_#{@@_sort_scope_id += 1}",
         as:           :sort,
@@ -39,7 +40,8 @@ module RailsStuff
         only:         only_actions,
         type:         :any,
       ) do |c, scope, val|
-        scope.order(SortScope.filter_param(val, c.params, allowed, default))
+        sort_args = SortScope.filter_param(val, c.params, allowed, default)
+        scope.public_send(order_method, sort_args)
       end
     end
     # rubocop:enable ClassVars

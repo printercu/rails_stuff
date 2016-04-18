@@ -115,5 +115,17 @@ RSpec.describe RailsStuff::SortScope do
         assert_sort_query '"users"."package_name" ASC', sort: :qqq
       end
     end
+
+    context 'when :order_method arg is given' do
+      before do
+        controller_class.has_sort_scope default: :id, order_method: :sort_by
+        model.define_singleton_method(:sort_by) { |*| order(my_id: :desc) }
+      end
+
+      it 'uses this method instead of sort' do
+        expect(model).to receive(:sort_by).with(id: :asc).and_call_original
+        assert_sort_query '"users"."my_id" DESC'
+      end
+    end
   end
 end
