@@ -15,7 +15,7 @@ module RailsStuff
     # Pass custom directory to require its content.
     # By default uses caller's filename with stripped `.rb` extension from.
     def require_nested(dir = 0)
-      dir = caller_locations[dir].path.sub(/\.rb$/, '') if dir.is_a?(Integer)
+      dir = caller_locations(dir + 1, 1)[0].path.sub(/\.rb$/, '') if dir.is_a?(Integer)
       Dir["#{dir}/*.rb"].each { |file| require_dependency file }
     end
   end
