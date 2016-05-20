@@ -1,4 +1,5 @@
 require 'rails_stuff/version'
+require 'active_support/version'
 require 'active_support/dependencies/autoload'
 
 # Useful stuff for Rails.
@@ -16,6 +17,16 @@ module RailsStuff
   autoload :SortScope
   autoload :Statusable
   autoload :TypesTracker
+
+  module_function
+
+  def rails_version
+    @rails_version = ActiveSupport::VERSION
+  end
+
+  def rails4?
+    rails_version::MAJOR == 4
+  end
 end
 
 require 'rails_stuff/engine' if defined?(Rails::Engine)

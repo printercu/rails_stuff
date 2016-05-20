@@ -45,6 +45,15 @@ RSpec.describe RailsStuff::ParamsParser do
     end
   end
 
+  describe '.parse_boolean' do
+    subject { ->(val = input) { described_class.parse_boolean(val) } }
+    it 'parses boolean values' do
+      [nil, ''].each { |x| expect(subject.call(x)).to eq nil }
+      [true, '1', 't', 'true', 'on'].each { |x| expect(subject.call(x)).to eq true }
+      [false, '0', 'f', 'false', 'off'].each { |x| expect(subject.call(x)).to eq false }
+    end
+  end
+
   describe '.parse_datetime' do
     subject { ->(val = input) { described_class.parse_datetime(val) } }
 

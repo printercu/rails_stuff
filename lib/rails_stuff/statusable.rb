@@ -162,9 +162,14 @@ module RailsStuff
       end
 
       # Rails 4 doesn't use `instance_exec` for scopes, so we do it manually.
+      # For Rails 5 it's just use `.scope`.
       def define_scope(name, body)
-        model.singleton_class.send(:define_method, name) do |*args|
-          all.scoping { instance_exec(*args, &body) } || all
+        if RailsStuff.rails4?
+          model.singleton_class.send(:define_method, name) do |*args|
+            all.scoping { instance_exec(*args, &body) } || all
+          end
+        else
+          model.scope(name, body)
         end
       end
 
