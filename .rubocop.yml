@@ -12,6 +12,7 @@ Style/ClosingParenthesisIndentation: {Enabled: false}
 Style/Documentation: {Enabled: false}
 Style/DotPosition: {EnforcedStyle: trailing}
 Style/IfUnlessModifier: {Enabled: false}
+Style/Lambda: {Enabled: false}
 Style/ModuleFunction: {Enabled: false}
 Style/MultilineMethodCallIndentation: {EnforcedStyle: indented}
 Style/MultilineOperationIndentation: {EnforcedStyle: indented}

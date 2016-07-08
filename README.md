@@ -208,12 +208,19 @@ end
 class User < ActiveRecord::Base
   extend RailsStuff::Statusable # when using without railtie
 
+  # Setup with array and it'll store status values as strings.
   STATUSES = %i(confirmed banned)
   has_status_field # uses #status field and STATUSES as values
 
   # Or pass everything explicitly
   has_status_field :subscription_status, %i(expired active), prefix: :subs_
   # :prefix is used for methods that are build
+end
+
+class Order < ActiveRecord::Base
+  # Provide hash, and it'll store mapped values in database.
+  STATUSES_MAPPING = {submitted: 1, confirmed: 2, delivered: 3}
+  has_status_field
 end
 
 user = User.first
@@ -224,6 +231,8 @@ User.confirmed.subs_active
 User.not_banned.not_subs_expired
 # Useful with has_scope
 User.with_status(param[:status]).with_subscription_status(params[:subs_status])
+# When using mapped values, scopes will accept status names:
+Order.with_status(:confirmed)
 
 # Translation & select helpers (requires activemodel_translation gem)
 User.status_name(:active)
