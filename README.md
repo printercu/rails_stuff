@@ -16,6 +16,8 @@ Collection of useful modules for Rails.
 
 - __[NullifyBlankAttrs](#nullifyblankattrs)__
   Proxies writers to replace empty values with `nil`.
+- __[AssociationWriter](#associationwriter)__
+  Override both writers with single instruction.
 - __[RandomUniqAttr](#randomuniqattr)__
   You generate random values for attributes, it'll ensure they are uniq.
 - __[Statusable](#statusable)__
@@ -176,6 +178,17 @@ Defines proxies for writers to replace empty values with `nil`.
 extend RailsStuff::NullifyBlankAttrs # when using without railtie
 
 nullify_blank_attrs :email, :title
+```
+
+### AssociationWriter
+
+ActiveRecord's association can be updated with object and by object id.
+Owerwrite this both writers with single instruction:
+
+```ruby
+association_writer :product do |val|
+  super(val).tap { update_price if product }
+end
 ```
 
 ### RandomUniqAttr

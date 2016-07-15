@@ -3,6 +3,7 @@ require 'rails/railtie'
 module RailsStuff
   MODULES = { # rubocop:disable MutableConstant
     require_nested:       [:require, -> { RequireNested.setup }],
+    association_writer:   :model,
     nullify_blank_attrs:  :model,
     random_uniq_attr:     :model,
     statusable:           :model,

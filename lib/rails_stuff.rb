@@ -6,6 +6,7 @@ module RailsStuff
   extend ActiveSupport::Autoload
 
   autoload :Helpers
+  autoload :AssociationWriter
   autoload :NullifyBlankAttrs
   autoload :ParamsParser
   autoload :RandomUniqAttr
