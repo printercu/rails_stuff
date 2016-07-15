@@ -464,12 +464,12 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
 
     describe '.not_#{status}' do
       it 'filters records by field values' do
-        assert_filter('("orders"."status" != ?)', '1') { model.not_confirmed }
+        assert_filter('"orders"."status" != ?', '1') { model.not_confirmed }
       end
 
       context 'for status with prefix' do
         it 'filters records by field value' do
-          assert_filter('("orders"."delivery_status" != ?)', '1') do
+          assert_filter('"orders"."delivery_status" != ?', '1') do
             model.not_delivery_sent
           end
         end

@@ -85,15 +85,15 @@ module RailsStuff
       # Scope with given status. Useful for has_scope.
       def field_scope
         field = self.field
-        model.scope "with_#{field}", ->(status) { where(field => status) }
+        define_scope "with_#{field}", ->(status) { where(field => status) }
       end
 
       def value_methods
         field = self.field
         statuses.map(&:to_s).each do |status_name|
           # Scopes for every status.
-          model.scope "#{prefix}#{status_name}", -> { where(field => status_name) }
-          model.scope "not_#{prefix}#{status_name}", -> { where.not(field => status_name) }
+          define_scope "#{prefix}#{status_name}", -> { where(field => status_name) }
+          define_scope "not_#{prefix}#{status_name}", -> { where.not(field => status_name) }
           status_accessor field, status_name, status_name, prefix
         end
       end
@@ -154,6 +154,13 @@ module RailsStuff
         end
       end
 
+      # Rails 4 doesn't use `instance_exec` for scopes, so we do it manually.
+      def define_scope(name, body)
+        model.singleton_class.send(:define_method, name) do |*args|
+          all.scoping { instance_exec(*args, &body) } || all
+        end
+      end
+
       def define_method(method, &block)
         model.statusable_methods.send(:define_method, method, &block)
       end
@@ -182,8 +189,8 @@ module RailsStuff
       def field_scope
         field = self.field
         mapping = self.mapping
-        model.scope "with_#{field}", ->(status) do
-          values = Array[status].map { |x| mapping.fetch(x, x) }
+        define_scope "with_#{field}", ->(status) do
+          values = Array.wrap(status).map { |x| mapping.fetch(x, x) }
           where(field => values)
         end
       end
@@ -192,8 +199,8 @@ module RailsStuff
         field = self.field
         statuses.each do |status_name, value|
           # Scopes for every status.
-          model.scope "#{prefix}#{status_name}", -> { where(field => value) }
-          model.scope "not_#{prefix}#{status_name}", -> { where.not(field => value) }
+          define_scope "#{prefix}#{status_name}", -> { where(field => value) }
+          define_scope "not_#{prefix}#{status_name}", -> { where.not(field => value) }
           status_accessor field, status_name, value, prefix
         end
       end
