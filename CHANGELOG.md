@@ -1,3 +1,8 @@
+## Unreleased
+
+- Helpers::Translation methods can raise errors on missing translations.
+  It respects app's `raise_on_missing_translations`, and can be configured manually.
+
 ## 0.4.0
 
 - TypesTracker defines scopes for every type.
