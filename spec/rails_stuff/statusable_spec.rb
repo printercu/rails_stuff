@@ -244,6 +244,8 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
         has_status_field validate: false
         has_status_field :delivery_status, {sent: 1, complete: 4},
           prefix: :delivery_
+        has_status_field :delivery_method, {pickup: 1, local: 2, international: 3},
+          suffix: :_delivery
       end
     end
 
@@ -379,6 +381,13 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
             to change { instance.delivery_complete? }.from(false).to(true)
         end
       end
+
+      context 'with suffix' do
+        it 'checks status' do
+          expect { instance.delivery_method = :local }.
+            to change { instance.local_delivery? }.from(false).to(true)
+        end
+      end
     end
 
     describe '##{status}!' do
@@ -391,6 +400,13 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
         it 'updates field value' do
           expect(instance).to receive(:update_attributes!).with(delivery_status: 1)
           instance.delivery_sent!
+        end
+      end
+
+      context 'with suffix' do
+        it 'updates field value' do
+          expect(instance).to receive(:update_attributes!).with(delivery_method: 2)
+          instance.local_delivery!
         end
       end
     end
@@ -460,6 +476,17 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
           end
         end
       end
+
+      context 'for status with suffix' do
+        it 'filters records by field value' do
+          assert_filter('"orders"."delivery_method" = ?', '1') do
+            model.pickup_delivery
+          end
+          assert_filter('"orders"."delivery_method" = ?', '3') do
+            model.international_delivery
+          end
+        end
+      end
     end
 
     describe '.not_#{status}' do
@@ -471,6 +498,14 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
         it 'filters records by field value' do
           assert_filter('"orders"."delivery_status" != ?', '1') do
             model.not_delivery_sent
+          end
+        end
+      end
+
+      context 'for status with suffix' do
+        it 'filters records by field value' do
+          assert_filter('"orders"."delivery_method" != ?', '1') do
+            model.not_pickup_delivery
           end
         end
       end

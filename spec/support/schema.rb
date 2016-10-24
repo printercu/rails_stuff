@@ -30,6 +30,7 @@ ActiveRecord::Schema.define do
   create_table :orders, force: true do |t|
     t.integer :status, null: false
     t.integer :delivery_status, null: false
+    t.integer :delivery_method, null: false
 
     t.timestamps null: false
   end

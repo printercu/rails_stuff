@@ -31,7 +31,9 @@ module RailsStuff
     #         has_status_field :delivery_status, %i(shipped delivered)
     #
     #         # this defines #delivery_shipped?, #delivery_shipped! methods
-    #         has_status_field :delivery_status, %i(shipped delivered), prefix: :delivery
+    #         has_status_field :delivery_status, %i(shipped delivered), prefix: :delivery_
+    #
+    # - `suffix`    - similar to `prefix`.
     #
     # - `validate`  - additional options for validatior. `false` to disable it.
     def has_status_field(field = :status, statuses = nil, **options)
@@ -56,7 +58,7 @@ module RailsStuff
 
     # Generates methods and scopes.
     class Builder
-      attr_reader :model, :field, :statuses, :options, :prefix
+      attr_reader :model, :field, :statuses, :options, :prefix, :suffix
       alias_method :statuses_list, :statuses
 
       def initialize(model, field, statuses, **options)
@@ -65,6 +67,7 @@ module RailsStuff
         @statuses = statuses
         @options = options
         @prefix = options[:prefix]
+        @suffix = options[:suffix]
       end
 
       def generate
@@ -92,21 +95,25 @@ module RailsStuff
         field = self.field
         statuses.map(&:to_s).each do |status_name|
           # Scopes for every status.
-          define_scope "#{prefix}#{status_name}", -> { where(field => status_name) }
-          define_scope "not_#{prefix}#{status_name}", -> { where.not(field => status_name) }
-          status_accessor field, status_name, status_name, prefix
+          define_scope "#{prefix}#{status_name}#{suffix}",
+            -> { where(field => status_name) }
+          define_scope "not_#{prefix}#{status_name}#{suffix}",
+            -> { where.not(field => status_name) }
+          status_accessor status_name, status_name
         end
       end
 
       # Generates methods for specific value.
-      def status_accessor(field, status_name, value, prefix = nil)
+      def status_accessor(status_name, value)
+        field = self.field
+
         # Shortcut to check status.
-        define_method "#{prefix}#{status_name}?" do
+        define_method "#{prefix}#{status_name}#{suffix}?" do
           self[field] == value
         end
 
         # Shortcut to update status.
-        define_method "#{prefix}#{status_name}!" do
+        define_method "#{prefix}#{status_name}#{suffix}!" do
           update_attributes!(field => value)
         end
       end
@@ -199,9 +206,9 @@ module RailsStuff
         field = self.field
         statuses.each do |status_name, value|
           # Scopes for every status.
-          define_scope "#{prefix}#{status_name}", -> { where(field => value) }
-          define_scope "not_#{prefix}#{status_name}", -> { where.not(field => value) }
-          status_accessor field, status_name, value, prefix
+          define_scope "#{prefix}#{status_name}#{suffix}", -> { where(field => value) }
+          define_scope "not_#{prefix}#{status_name}#{suffix}", -> { where.not(field => value) }
+          status_accessor status_name, value
         end
       end
 

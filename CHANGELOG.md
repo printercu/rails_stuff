@@ -2,6 +2,7 @@
 
 - Helpers::Translation methods can raise errors on missing translations.
   It respects app's `raise_on_missing_translations`, and can be configured manually.
+- Statusable supports mappings (store status as integer) and suffixes.
 
 ## 0.4.0
 
