@@ -78,30 +78,35 @@ RSpec.describe RailsStuff::ResourcesController::BasicHelpers do
   end
 
   describe '#resource_params' do
+    subject { -> { klass.new.send(:resource_params) } }
     let(:params) do
       {
         user: {name: 'Name', lastname: 'Lastname', admin: true, id: 1},
         project: {title: 'Title', _destroy: true, id: 2},
       }
     end
+    let(:params_class) { ActionController::Parameters }
 
     before do
       klass.resource_param_name = :user
-      allow_any_instance_of(klass).to receive(:params) do
-        ActionController::Parameters.new params.as_json
-      end
+      allow_any_instance_of(klass).to receive(:params) { params_class.new params.as_json }
     end
 
     it 'uses #permitted_attrs and .resource_param_name to filter params' do
       expect { klass.permit_attrs :name, :lastname, :address }.
-        to change { klass.new.send :resource_params }.
-        from({}).to(name: 'Name', lastname: 'Lastname')
+        to change(&subject).from({}).to(name: 'Name', lastname: 'Lastname')
       expect { klass.resource_param_name = :project }.
-        to change { klass.new.send :resource_params }.to({})
+        to change(&subject).to({})
       expect { klass.permit_attrs :title }.
-        to change { klass.new.send :resource_params }.to(title: 'Title')
+        to change(&subject).to(title: 'Title')
       expect { klass.resource_param_name = :missing_key }.
-        to change { klass.new.send :resource_params }.to({})
+        to change(&subject).to({})
+    end
+
+    context 'when resource key is not present in params' do
+      before { klass.resource_param_name = :company }
+      its(:call) { should be_instance_of(params_class) }
+      its(:call) { should eq({}) }
     end
   end
 
