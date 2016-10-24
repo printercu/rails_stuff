@@ -38,6 +38,7 @@ Collection of useful modules for Rails.
   `#url_for_keeping_params` merges passed options with request's query params.
 - __[RequireNested](#requirenested)__
   helper to load files in subdirectory.
+- `rails g concern %parent%/%module%` generator for concerns.
 
 #### Helpers:
 
@@ -158,7 +159,7 @@ Currently depends on `gem 'responders', '> 2.0'`.
 # in controller
 extend RailsStuff::SortScope # when using without railtie
 
-sort_scope by: [:name, :created_at, :balance], default: [:name]
+has_sort_scope by: [:name, :created_at, :balance], default: [:name]
 
 # this scope will accept
 #   - `sort=name`

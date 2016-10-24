@@ -23,7 +23,8 @@ module RailsStuff
     #
     # - `by` - array of available fields to sort by,
     # - `default` - default sort expression,
-    # - `only` - bypassed to `has_scope` to limit actions (default to `:index`).
+    # - `only` - bypassed to `has_scope` to limit actions (default to `:index`),
+    # - `order_method` - use custom method to sort instead of `.order`.
     #
     # rubocop:disable ClassVars
     def has_sort_scope(config = {})

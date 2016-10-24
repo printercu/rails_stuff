@@ -1,8 +1,33 @@
 ## Unreleased
 
-- Helpers::Translation methods can raise errors on missing translations.
-  It respects app's `raise_on_missing_translations`, and can be configured manually.
+### Controllers
+
+- `belongs_to`.
+- `resource_helper` generates enquirer method.
+- `resources_controller kaminari: false` to skip kaminari for the only controller.
+- `has_sort_scope` can use custom order method.
+- Fix: removed source_for_collection from action_methods.
+
+### Models
+
 - Statusable supports mappings (store status as integer) and suffixes.
+- AssociationWriter to override `#field=` & `#field_id=` in single instruction.
+- Limit retries count for RandomUniqAttr (default to 10).
+
+### Helpers
+
+- `Helpers::Translation` methods can raise errors on missing translations.
+  It respects app's `raise_on_missing_translations`, and can be configured manually.
+
+### Tests
+
+- Concurrency helper.
+- RSpec configurator.
+
+Misc
+
+- RequireNested to require all files in subdirectory.
+- `rails g concern %parent%/%module%` generator for concerns.
 
 ## 0.4.0
 
