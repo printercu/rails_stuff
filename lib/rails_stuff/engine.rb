@@ -55,5 +55,9 @@ module RailsStuff
     initializer :rails_stuff_setup_modules, after: :load_config_initializers do
       RailsStuff.setup_modules!
     end
+
+    generators do
+      require 'rails_stuff/generators/concern/concern_generator'
+    end
   end
 end

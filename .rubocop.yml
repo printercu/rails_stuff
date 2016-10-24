@@ -1,3 +1,7 @@
+AllCops:
+  Exclude:
+    - lib/rails_stuff/generators/*/templates/*.rb
+    - tmp/**/*
 Rails: {Enabled: true}
 
 Style/Alias: {Enabled: false}
