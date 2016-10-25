@@ -8,7 +8,7 @@ module RailsStuff
   # to allowed subset.
   module SortScope
     # Register type for has_scop that accepts stings, hashes & arrays.
-    HasScope::ALLOWED_TYPES[:any] = [[String, Hash, Array, Symbol]]
+    HasScope::ALLOWED_TYPES[:any] = [[String, Hash, Array, Symbol, ActionController::Parameters]]
 
     # Setups has_scope to order collection by allowed columns.
     # Sort column is filtered by SortScope.filter_param method.
@@ -54,6 +54,7 @@ module RailsStuff
       def filter_param(val, params, allowed, default = nil)
         val ||= default
         unless val == default
+          val = val.to_unsafe_h if val.is_a?(ActionController::Parameters)
           val =
             if val.is_a?(Hash)
               val.each_with_object({}) do |(key, dir), h|

@@ -103,8 +103,18 @@ module RailsStuff
     # Parse boolean using ActiveResord's parser.
     def parse_boolean(val)
       parse(val) do
-        @boolean_parser ||= ActiveRecord::Type::Boolean.new
-        @boolean_parser.type_cast_from_user(val)
+        @boolean_parser ||= boolean_parser
+        @boolean_parser[val]
+      end
+    end
+
+    def boolean_parser
+      require 'active_record'
+      ar_parser = ActiveRecord::Type::Boolean.new
+      if RailsStuff.rails4?
+        ->(val) { ar_parser.type_cast_from_user(val) }
+      else
+        ->(val) { ar_parser.cast(val) }
       end
     end
 

@@ -79,6 +79,8 @@ RSpec.describe RailsStuff::ResourcesController::BasicHelpers do
 
   describe '#resource_params' do
     subject { -> { klass.new.send(:resource_params) } }
+    # In Rails4 #to_h returns ::Hash.
+    let(:subject_to_h) { -> { subject.call.to_h.with_indifferent_access } }
     let(:params) do
       {
         user: {name: 'Name', lastname: 'Lastname', admin: true, id: 1},
@@ -93,20 +95,22 @@ RSpec.describe RailsStuff::ResourcesController::BasicHelpers do
     end
 
     it 'uses #permitted_attrs and .resource_param_name to filter params' do
+
       expect { klass.permit_attrs :name, :lastname, :address }.
-        to change(&subject).from({}).to(name: 'Name', lastname: 'Lastname')
+        to change(&subject_to_h).from({}).to(name: 'Name', lastname: 'Lastname')
+      expect(subject.call).to be_instance_of(params_class)
       expect { klass.resource_param_name = :project }.
-        to change(&subject).to({})
+        to change(&subject_to_h).to({})
       expect { klass.permit_attrs :title }.
-        to change(&subject).to(title: 'Title')
+        to change(&subject_to_h).to(title: 'Title')
       expect { klass.resource_param_name = :missing_key }.
-        to change(&subject).to({})
+        to change(&subject_to_h).to({})
     end
 
     context 'when resource key is not present in params' do
       before { klass.resource_param_name = :company }
       its(:call) { should be_instance_of(params_class) }
-      its(:call) { should eq({}) }
+      its(:call) { should eq(params_class.new) }
     end
   end
 

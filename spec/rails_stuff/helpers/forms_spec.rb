@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe RailsStuff::Helpers::Forms, type: :helper do
   describe '#hidden_params_fields' do
     before do
-      params.merge!(
+      {
         str_1: 'val_1',
         str_2: '',
         ar_1: %w(val_1_1 val_1_2),
@@ -11,7 +11,7 @@ RSpec.describe RailsStuff::Helpers::Forms, type: :helper do
         ar_3: [],
         ar_4: [''],
         null: nil,
-      )
+      }.each { |k, v| params[k] = v }
     end
 
     def assert_inputs(fields, expected)

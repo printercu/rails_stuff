@@ -18,8 +18,8 @@ RSpec.describe ActionController::Parameters do
     let(:instance) { described_class.new(input) }
 
     it 'permits params and checks they are present' do
-      expect(instance.require_permitted('a')).to eq input.slice('a')
-      expect(instance.require_permitted('a', 'b')).to eq input.slice('a', 'b')
+      expect(instance.require_permitted('a').to_h).to eq input.slice('a')
+      expect(instance.require_permitted('a', 'b').to_h).to eq input.slice('a', 'b')
 
       ('c'..input.keys.max).each do |field|
         expect { instance.require_permitted('a', field, 'b') }.

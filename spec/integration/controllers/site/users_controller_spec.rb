@@ -2,11 +2,12 @@ require 'integration_helper'
 
 RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
   let(:resource) { User.create_default! }
+  let(:resource_id) { resource.id }
   let(:other_resource) { User.create_default!(email: 'other@example.com') }
   let(:controller_resource) { controller.send :resource }
 
   describe '#index' do
-    subject { get :index, params }
+    subject { get :index, params: params }
     let(:params) { {} }
     let(:collection) do
       should render_template :index
@@ -44,7 +45,7 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
   end
 
   describe '#show' do
-    subject { get :show, id: resource }
+    subject { get :show, params: {id: resource_id} }
 
     it 'finds resource and renders template' do
       should render_template :show
@@ -52,14 +53,14 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
     end
 
     context 'when resource is not found' do
-      subject { get :show, id: -1 }
+      let(:resource_id) { -1 }
       render_views
       it { should be_not_found }
     end
   end
 
   describe '#new' do
-    subject { get :new, user: {name: 'New name', admin: true} }
+    subject { get :new, params: {user: {name: 'New name', admin: true}} }
 
     it 'initializes new resource' do
       should render_template :new
@@ -73,7 +74,7 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
 
   describe '#create' do
     context 'when create succeeds' do
-      subject { post :create, user: {name: 'New name', email: 'test', admin: true} }
+      subject { post :create, params: {user: {name: 'New name', email: 'test', admin: true}} }
 
       it 'redirects to created user path' do
         expect { should be_redirect }.to change(User, :count).by(1)
@@ -84,7 +85,7 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
     end
 
     context 'when create fails' do
-      subject { post :create, user: {name: 'New name', admin: true} }
+      subject { post :create, params: {user: {name: 'New name', admin: true}} }
 
       it 'renders :new' do
         expect { should render_template :new }.to_not change(User, :count)
@@ -97,7 +98,7 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
   end
 
   describe '#edit' do
-    subject { get :edit, id: resource }
+    subject { get :edit, params: {id: resource_id} }
 
     it 'finds resource and renders template' do
       should render_template :edit
@@ -105,18 +106,17 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
     end
 
     context 'when resource is not found' do
-      subject { get :show, id: -1 }
+      let(:resource_id) { -1 }
       render_views
       it { should be_not_found }
     end
   end
 
   describe '#update' do
-    subject { patch :update, id: resource.id, user: resource_params }
+    subject { patch :update, params: {id: resource_id, user: resource_params} }
+    let(:resource_params) { {name: 'New name', admin: true} }
 
     context 'when update succeeds' do
-      let(:resource_params) { {name: 'New name', admin: true} }
-
       it 'redirects to user path' do
         expect { should be_redirect }.
           to change { resource.reload.name }.to('New name')
@@ -139,13 +139,13 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
     end
 
     context 'when resource is not found' do
-      subject { patch :update, id: -1 }
+      let(:resource_id) { -1 }
       it { should be_not_found }
     end
   end
 
   describe '#destroy' do
-    subject { delete :destroy, id: resource.id }
+    subject { delete :destroy, params: {id: resource_id} }
 
     context 'when destroy succeeds' do
       it 'redirects to index' do
@@ -170,7 +170,7 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
     end
 
     context 'when resource is not found' do
-      subject { delete :destroy, id: -1 }
+      let(:resource_id) { -1 }
       it { should be_not_found }
     end
   end

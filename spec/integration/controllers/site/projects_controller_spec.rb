@@ -2,13 +2,15 @@ require 'integration_helper'
 
 RSpec.describe Site::ProjectsController, :db_cleaner, type: :controller do
   let(:user) { User.create_default! }
+  let(:user_id) { user.id }
   let(:resource) { Project.create_default!(user: user) }
+  let(:resource_id) { resource.id }
   let(:other_user) { User.create_default! }
   let(:other_resource) { Project.create_default!(user: other_user) }
   let(:controller_resource) { controller.send :resource }
 
   describe '#index' do
-    subject { get :index, params }
+    subject { get :index, params: params }
     let(:params) { {user_id: user.id} }
     before { resource && other_resource }
 
@@ -35,7 +37,7 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :controller do
   end
 
   describe '#create' do
-    subject { post :create, user_id: user.id, project: resource_params }
+    subject { post :create, params: {user_id: user_id, project: resource_params} }
     let(:resource_params) do
       {
         name: 'New project',
@@ -91,13 +93,13 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :controller do
     end
 
     context 'when parent is not found' do
-      subject { post :create, user_id: -1, project: {type: 'Project::External'} }
+      let(:user_id) { -1 }
       it { should be_not_found }
     end
   end
 
   describe '#update' do
-    subject { patch :update, id: resource.id, project: resource_params }
+    subject { patch :update, params: {id: resource_id, project: resource_params} }
     let(:resource_params) do
       {
         name: 'New project',
@@ -155,7 +157,7 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :controller do
   end
 
   describe '#destroy' do
-    subject { -> { delete :destroy, id: resource.id } }
+    subject { -> { delete :destroy, params: {id: resource.id} } }
     it { should change { resource.class.exists?(resource.id) }.to false }
     its(:call) { should redirect_to site_user_projects_path(user) }
   end
