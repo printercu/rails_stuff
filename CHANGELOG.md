@@ -1,5 +1,11 @@
 ## Unreleased
 
+## 0.5.1
+
+Rails 5 support.
+
+## 0.5.0
+
 ### Controllers
 
 - `belongs_to`.
