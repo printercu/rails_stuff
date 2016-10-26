@@ -140,7 +140,7 @@ module RailsStuff
         sym_method = "#{field}_sym"
 
         # Class-level translation helper.
-        generate_class_method "#{field}_name" do |status|
+        define_class_method "#{field}_name" do |status|
           t(".#{field}_name.#{status}") if status
         end
 
@@ -155,8 +155,10 @@ module RailsStuff
         statuses_list = self.statuses_list
         translation_method = :"#{field}_name"
         # Returns array compatible with select_options helper.
-        generate_class_method "#{field}_select_options" do |args = {}|
-          filtered_statuses = statuses_list - Array.wrap(args[:except])
+        define_class_method "#{field}_select_options" do |args = {}|
+          filtered_statuses = args[:only] || statuses_list
+          except = args[:except]
+          filtered_statuses -= except if except
           filtered_statuses.map { |x| [send(translation_method, x), x] }
         end
       end
@@ -177,7 +179,7 @@ module RailsStuff
         model.statusable_methods.send(:define_method, method, &block)
       end
 
-      def generate_class_method(method, &block)
+      def define_class_method(method, &block)
         model.statusable_methods::ClassMethods.send(:define_method, method, &block)
       end
     end

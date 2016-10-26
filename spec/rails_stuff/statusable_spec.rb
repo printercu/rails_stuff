@@ -106,8 +106,15 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
 
     context 'when :except is given' do
       it 'returns only filtered items' do
-        expect(model.status_select_options except: :confirmed).
+        expect(model.status_select_options except: [:confirmed]).
           to contain_exactly ['banned_en', :banned]
+      end
+    end
+
+    context 'when :only is given' do
+      it 'returns only requested items' do
+        expect(model.status_select_options only: [:confirmed]).
+          to contain_exactly ['confirmed_en', :confirmed]
       end
     end
 
@@ -121,8 +128,15 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
 
       context 'when :except is given' do
         it 'returns only filtered items' do
-          expect(model.subscription_status_select_options except: :pending).
+          expect(model.subscription_status_select_options except: [:pending]).
             to contain_exactly ['expired_en', :expired]
+        end
+      end
+
+      context 'when :only is given' do
+        it 'returns only filtered items' do
+          expect(model.subscription_status_select_options only: [:pending]).
+            to contain_exactly ['pending_en', :pending]
         end
       end
     end
@@ -354,8 +368,15 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
 
       context 'when :except is given' do
         it 'returns only filtered items' do
-          expect(model.status_select_options except: :confirmed).
+          expect(model.status_select_options except: [:confirmed]).
             to contain_exactly ['rejected_en', :rejected]
+        end
+      end
+
+      context 'when :only is given' do
+        it 'returns only requested items' do
+          expect(model.status_select_options only: [:confirmed]).
+            to contain_exactly ['confirmed_en', :confirmed]
         end
       end
 
@@ -369,8 +390,15 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
 
         context 'when :except is given' do
           it 'returns only filtered items' do
-            expect(model.delivery_status_select_options except: :sent).
+            expect(model.delivery_status_select_options except: [:sent]).
               to contain_exactly ['complete_en', :complete]
+          end
+        end
+
+        context 'when :only is given' do
+          it 'returns only requested items' do
+            expect(model.delivery_status_select_options only: [:sent]).
+              to contain_exactly ['sent_en', :sent]
           end
         end
       end
