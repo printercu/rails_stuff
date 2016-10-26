@@ -82,7 +82,7 @@ module RailsStuff
 
       # Updates resource with `resource_params`.
       def update_resource(attrs = resource_params)
-        resource.update_attributes(attrs)
+        resource.update(attrs)
       end
 
       # Flashes errors in a safe way. Joins `full_messages` and truncates

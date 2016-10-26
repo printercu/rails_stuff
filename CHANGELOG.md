@@ -9,6 +9,10 @@
   - `.select_options` supports `:only` option.
   - Helpers to map/unmap values for mapped statuses from external code.
 
+### Misc
+
+- Use AR#update instead of #update_attributes.
+
 ## 0.5.1
 
 Rails 5 support.

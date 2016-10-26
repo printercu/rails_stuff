@@ -60,7 +60,7 @@ module RailsStuff
 
         # Shortcut to update status.
         define_method "#{prefix}#{status}#{suffix}!" do
-          update_attributes!(field => value)
+          update!(field => value)
         end
       end
 

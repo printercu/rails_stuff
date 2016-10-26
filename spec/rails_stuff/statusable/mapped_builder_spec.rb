@@ -133,20 +133,20 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
 
   describe '##{status}!' do
     it 'updates field value' do
-      expect(instance).to receive(:update_attributes!).with(status: 1)
+      expect(instance).to receive(:update!).with(status: 1)
       instance.confirmed!
     end
 
     context 'for custom field' do
       it 'updates field value' do
-        expect(instance).to receive(:update_attributes!).with(delivery_status: 1)
+        expect(instance).to receive(:update!).with(delivery_status: 1)
         instance.delivery_sent!
       end
     end
 
     context 'with suffix' do
       it 'updates field value' do
-        expect(instance).to receive(:update_attributes!).with(delivery_method: 2)
+        expect(instance).to receive(:update!).with(delivery_method: 2)
         instance.local_delivery!
       end
     end
