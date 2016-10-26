@@ -52,5 +52,15 @@ module RailsStuff
       helper.attach
       helper.generate_methods(options)
     end
+
+    # Module to hold generated methods. Single for all status fields in model.
+    def statusable_methods
+      # Include generated methods with a module, not right in class.
+      @statusable_methods ||= Module.new.tap do |m|
+        m.const_set :ClassMethods, Module.new
+        include m
+        extend m::ClassMethods
+      end
+    end
   end
 end

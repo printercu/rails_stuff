@@ -67,12 +67,7 @@ module RailsStuff
 
       # Module to hold generated methods.
       def methods_module
-        # Include generated methods with a module, not right in class.
-        @methods_module ||= Module.new.tap do |m|
-          m.const_set :ClassMethods, Module.new
-          model.send :include, m
-          model.extend m::ClassMethods
-        end
+        model.statusable_methods
       end
     end
   end
