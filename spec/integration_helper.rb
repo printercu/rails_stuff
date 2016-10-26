@@ -4,6 +4,7 @@ require 'rails/railtie'
 require 'support/active_record'
 require 'kaminari'
 require 'has_scope'
+require 'activemodel_translation/helper'
 Kaminari::Hooks.init
 
 # # Routes
@@ -13,6 +14,7 @@ TestRoutes.draw do
     resources :users do
       resources :projects, shallow: true
     end
+    resources :forms, only: :index
   end
 end
 
@@ -69,6 +71,18 @@ class Project < ActiveRecord::Base
   end
 end
 
+class Customer < ActiveRecord::Base
+  extend ActiveModel::Translation
+  extend RailsStuff::Statusable
+  has_status_field :status, [:verified, :banned, :premium]
+end
+
+class Order < ActiveRecord::Base
+  extend ActiveModel::Translation
+  extend RailsStuff::Statusable
+  has_status_field :status, {pending: 1, accepted: 2, delivered: 3}, {}
+end
+
 # # Controllers
 class ApplicationController < ActionController::Base
   extend RailsStuff::ResourcesController
@@ -98,5 +112,8 @@ module Site
     def create
       super(action: :index)
     end
+  end
+
+  class FormsController < SiteController
   end
 end

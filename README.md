@@ -249,10 +249,12 @@ User.with_status(param[:status]).with_subscription_status(params[:subs_status])
 Order.with_status(:confirmed)
 
 # Translation & select helpers (requires activemodel_translation gem)
-User.status_name(:active)
+User.statuses.translate(:active)
 user.subscription_status_name # translates current status
-User.status_select_options
-User.subscription_status_select_options except: [:expired]
+User.statuses.select_options
+User.subscription_statuses.select_options except: [:expired]
+Order.statuses.map([:submitted, :delivered]) # => [1, 3]
+Order.statuses.unmap([1, 3]) # => [:submitted, :delivered]
 
 # Accessors
 user.status = 'confirmed' or user.confirmed!

@@ -1,5 +1,14 @@
 ## Unreleased
 
+### Models
+
+- Improved Statusable:
+
+  - Model are now clear from lot of helper methods.
+    There is single `statuses` method for statusable field which holds all helpers.
+  - `.select_options` supports `:only` option.
+  - Helpers to map/unmap values for mapped statuses from external code.
+
 ## 0.5.1
 
 Rails 5 support.
