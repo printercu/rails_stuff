@@ -194,18 +194,22 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
     end
   end
 
-  def assert_filter(*expected)
-    relation = yield
-    if RailsStuff.rails4?
+  if RailsStuff.rails4?
+    def assert_filter(*expected)
+      relation = yield
       where_sql = relation.where_values.map(&:to_sql).join
       values_sql = relation.bind_values.map(&:second).join
-    else
+      expect([where_sql, values_sql]).to eq(expected)
+    end
+  else
+    def assert_filter(*expected)
+      relation = yield
       where_sql = relation.where_clause.ast.to_sql
       # strip the only pair of ()
       where_sql = where_sql[1...-1] if where_sql.starts_with?('(') && where_sql.rindex('(') == 0
       values_sql = relation.where_clause.binds.map(&:value).join
+      expect([where_sql, values_sql]).to eq(expected)
     end
-    expect([where_sql, values_sql]).to eq(expected)
   end
 
   describe '.with_#{field}' do
