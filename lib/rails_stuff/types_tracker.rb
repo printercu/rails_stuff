@@ -6,7 +6,7 @@ module RailsStuff
   # Also allows to remove any of descendants from this list.
   # Useful for STI models to track all available types.
   #
-  # Railtie adds `to_prepare` callback, which will automatically load types.
+  # Use with RequireNested to preload all nested classes.
   module TypesTracker
     class << self
       def extended(base)

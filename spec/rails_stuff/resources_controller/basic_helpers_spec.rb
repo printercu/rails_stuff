@@ -95,7 +95,6 @@ RSpec.describe RailsStuff::ResourcesController::BasicHelpers do
     end
 
     it 'uses #permitted_attrs and .resource_param_name to filter params' do
-
       expect { klass.permit_attrs :name, :lastname, :address }.
         to change(&subject_to_h).from({}).to(name: 'Name', lastname: 'Lastname')
       expect(subject.call).to be_instance_of(params_class)

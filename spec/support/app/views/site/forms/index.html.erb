@@ -1,0 +1,13 @@
+index.html.erb
+<%= form_for Order.new(status: :pending), url: '/' do |f| %>
+  <%= f.select :status, Order.statuses.select_options(only: [:pending, :accepted]) %>
+<%- end %>
+
+<%= form_for Order.new(status: :delivered), url: '/', html: {id: 'order_2'} do |f| %>
+  <%= f.select :status, Order.statuses.select_options(original: true, except: [1]),
+    selected: f.object.status(true) %>
+<%- end %>
+
+<%= form_for Customer.new(status: :banned), url: '/' do |f| %>
+  <%= f.select :status, Customer.statuses.select_options(except: [:premium]) %>
+<%- end %>
