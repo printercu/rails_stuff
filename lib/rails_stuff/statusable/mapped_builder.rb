@@ -7,20 +7,15 @@ module RailsStuff
       # Field reader returns mapped value, so we don't need to stringify list.
       alias_method :valid_list, :list
 
+      def each_status(&block)
+        mapping.each(&block)
+      end
+
       # Scope with given status. Useful for has_scope.
       def field_scope
         field = self.field
         helper = self.helper
         define_scope "with_#{field}", ->(status) { where(field => helper.map(status)) }
-      end
-
-      def value_methods
-        field = self.field
-        mapping.stringify_keys.each do |status, value|
-          define_scope "#{prefix}#{status}#{suffix}", -> { where(field => value) }
-          define_scope "not_#{prefix}#{status}#{suffix}", -> { where.not(field => value) }
-          status_accessor status, value
-        end
       end
 
       def field_reader

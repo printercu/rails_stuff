@@ -8,12 +8,6 @@ module RailsStuff
     class Helper
       attr_reader :model, :field, :list
 
-      class << self
-        def default_builder
-          parent.const_get(name.split('::').last.sub('Helper', 'Builder'))
-        end
-      end
-
       def initialize(model, field, statuses)
         @model = model
         @field = field.freeze
@@ -37,10 +31,6 @@ module RailsStuff
       def attach(method_name = field.to_s.pluralize)
         helper = self
         define_class_method(method_name) { helper }
-      end
-
-      def generate_methods(builder: self.class.default_builder, **options)
-        builder.new(self, options).generate
       end
 
       # Rails 4 doesn't use `instance_exec` for scopes, so we do it manually.

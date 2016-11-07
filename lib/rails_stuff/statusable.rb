@@ -23,6 +23,15 @@ module RailsStuff
     autoload :MappedHelper, 'rails_stuff/statusable/mapped_helper'
     autoload :MappedBuilder, 'rails_stuff/statusable/mapped_builder'
 
+    class << self
+      # Fetches statuses list from model constants. See #has_status_field.
+      def fetch_statuses(model, field)
+        const_name = "#{field.to_s.pluralize.upcase}_MAPPING"
+        const_name = field.to_s.pluralize.upcase unless model.const_defined?(const_name)
+        model.const_get(const_name)
+      end
+    end
+
     # Defines all helpers working with `field` (default to `status`).
     # List of values can be given as second argument, otherwise it'll
     # be read from consts using pluralized name of `field`
@@ -41,16 +50,29 @@ module RailsStuff
     # - `suffix`    - similar to `prefix`.
     #
     # - `validate`  - additional options for validatior. `false` to disable it.
-    def has_status_field(field = :status, statuses = nil, helper: nil, **options)
-      unless statuses
-        const_name = "#{field.to_s.pluralize.upcase}_MAPPING"
-        const_name = field.to_s.pluralize.upcase unless const_defined?(const_name)
-        statuses = const_get(const_name)
-      end
-      helper ||= statuses.is_a?(Hash) ? MappedHelper : Helper
-      helper = helper.new(self, field, statuses)
+    #
+    # - `helper`    - custom helper class.
+    #
+    # - `builder`   - custom methods builder class.
+    #
+    # Pass block to customize methods generation process (see Builder for available methods):
+    #
+    #   # This will define only scope with status names, but no other methods.
+    #   has_status_field do |builder|
+    #     builder.value_scopes
+    #   end
+    #
+    def has_status_field(field = :status, statuses = nil, **options)
+      statuses ||= Statusable.fetch_statuses(self, field)
+      is_mapped = statuses.is_a?(Hash)
+      helper_class = options.fetch(:helper) { is_mapped ? MappedHelper : Helper }
+      helper = helper_class.new(self, field, statuses)
       helper.attach
-      helper.generate_methods(options)
+      builder_class = options.fetch(:builder) { is_mapped ? MappedBuilder : Builder }
+      if builder_class
+        builder = builder_class.new(helper, options)
+        block_given? ? yield(builder) : builder.generate
+      end
     end
 
     # Module to hold generated methods. Single for all status fields in model.

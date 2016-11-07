@@ -15,11 +15,6 @@ RSpec.describe RailsStuff::Statusable::Helper, :db_cleaner do
   end
   before { add_translations(status: %w(confirmed banned)) }
 
-  describe '.default_builder' do
-    subject { described_class.default_builder }
-    it { should eq RailsStuff::Statusable::Builder }
-  end
-
   its(:list) { should eq statuses }
   its(:list) { should be_frozen }
 
