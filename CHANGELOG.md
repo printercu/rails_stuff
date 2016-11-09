@@ -2,7 +2,8 @@
 
 ### Controllers
 
-- Don't override :location option if present.
+- Don't overwrite :location option if present.
+- Don't overwrite responder and `respond_with`'s mimes.
 
 ### Models
 

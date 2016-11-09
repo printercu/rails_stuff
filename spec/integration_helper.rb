@@ -92,6 +92,7 @@ end
 
 class SiteController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: -> { head :not_found }
+  respond_to :html
 end
 
 module Site

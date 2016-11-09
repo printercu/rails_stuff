@@ -41,8 +41,6 @@ module RailsStuff
     def resources_controller(**options)
       ResourcesController.inject(self, **options)
 
-      respond_to :html
-      self.responder = Responder
       self.after_save_action = options[:after_save_action] || after_save_action
 
       resource_belongs_to(*options[:belongs_to]) if options[:belongs_to]

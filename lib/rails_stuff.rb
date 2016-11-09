@@ -14,6 +14,7 @@ module RailsStuff
   autoload :RedisStorage
   autoload :RequireNested
   autoload :ResourcesController
+  autoload :Responders
   autoload :SortScope
   autoload :Statusable
   autoload :TypesTracker

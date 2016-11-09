@@ -15,7 +15,7 @@ RSpec.describe RailsStuff::ResourcesController do
     end
 
     it { should change { klass.ancestors }.by basic_modules }
-    it { should change { klass.responder }.to described_class::Responder }
+    it { should_not change(klass, :responder) }
 
     context 'when :source_relation is given' do
       it 'overrides method' do
