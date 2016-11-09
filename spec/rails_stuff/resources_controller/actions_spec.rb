@@ -1,8 +1,9 @@
 RSpec.describe RailsStuff::ResourcesController::Actions do
   let(:klass) { build_controller_class }
   let(:controller) { klass.new }
-  let(:resource) { double }
+  let(:resource) { double(:resource) }
   let(:block) { -> {} }
+  let(:options) { {option: :param} }
   before do
     allow(controller).to receive_messages(
       after_save_url: :save_redirect_url,
@@ -19,6 +20,22 @@ RSpec.describe RailsStuff::ResourcesController::Actions do
     end
   end
 
+  def expect_respond_with(*args, &block)
+    expect(controller).to receive(:respond_with).with(*args) do |&blk|
+      expect(blk).to be block
+    end
+  end
+
+  shared_examples 'with custom location' do
+    context 'and custom location is given' do
+      let(:options) { super().merge(location: :my_custom_location) }
+      it 'doesnt override location' do
+        expect_respond_with(resource, options, &block)
+        subject.call
+      end
+    end
+  end
+
   describe '#new' do
     it 'calls build_resource' do
       expect(controller).to receive(:build_resource)
@@ -27,66 +44,63 @@ RSpec.describe RailsStuff::ResourcesController::Actions do
   end
 
   describe '#create' do
+    subject { -> { controller.create options.dup, &block } }
     before { expect(controller).to receive_messages(create_resource: create_result) }
 
     context 'when create succeeded' do
       let(:create_result) { true }
       it 'sets location and calls respond_with' do
-        expect(controller).to receive(:respond_with).
-          with(resource, option: :param, location: :save_redirect_url) do |&blk|
-            expect(blk).to be block
-          end
-        controller.create option: :param, &block
+        expect_respond_with(resource, **options, location: :save_redirect_url, &block)
+        subject.call
       end
+
+      include_examples 'with custom location'
     end
 
     context 'when create failed' do
       let(:create_result) { false }
       it 'calls respond_with, but doesnt set location' do
-        expect(controller).to receive(:respond_with).
-          with(resource, option: :param) do |&blk|
-            expect(blk).to be block
-          end
-        controller.create option: :param, &block
+        expect_respond_with(resource, options, &block)
+        subject.call
       end
     end
   end
 
   describe '#update' do
+    subject { -> { controller.update options.dup, &block } }
     before { expect(controller).to receive_messages(update_resource: update_result) }
 
     context 'when update succeeded' do
       let(:update_result) { true }
       it 'sets location and calls respond_with' do
-        expect(controller).to receive(:respond_with).
-          with(resource, option: :param, location: :save_redirect_url) do |&blk|
-            expect(blk).to be block
-          end
-        controller.update option: :param, &block
+        expect_respond_with(resource, **options, location: :save_redirect_url, &block)
+        subject.call
       end
+
+      include_examples 'with custom location'
     end
 
     context 'when update failed' do
       let(:update_result) { false }
       it 'calls respond_with, but doesnt set location' do
-        expect(controller).to receive(:respond_with).
-          with(resource, option: :param) do |&blk|
-            expect(blk).to be block
-          end
-        controller.update option: :param, &block
+        expect_respond_with(resource, options, &block)
+        subject.call
       end
     end
   end
 
   describe '#destroy' do
-    it 'calls rsource.destroy, flash_errors! and respond_with' do
+    subject { -> { controller.destroy options.dup, &block } }
+    before do
       expect(resource).to receive(:destroy)
       expect(controller).to receive_messages(flash_errors!: true)
-      expect(controller).to receive(:respond_with).
-        with(resource, location: :destroy_redirect_url, option: :param) do |&blk|
-          expect(blk).to be block
-        end
-      controller.destroy option: :param, &block
     end
+
+    it 'calls rsource.destroy, flash_errors! and respond_with' do
+      expect_respond_with(resource, option: :param, location: :destroy_redirect_url, &block)
+      subject.call
+    end
+
+    include_examples 'with custom location'
   end
 end

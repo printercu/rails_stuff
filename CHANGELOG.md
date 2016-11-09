@@ -1,5 +1,9 @@
 ## Unreleased
 
+### Controllers
+
+- Don't override :location option if present.
+
 ### Models
 
 - Improved Statusable:
