@@ -80,7 +80,7 @@ end
 class Order < ActiveRecord::Base
   extend ActiveModel::Translation
   extend RailsStuff::Statusable
-  has_status_field :status, {pending: 1, accepted: 2, delivered: 3}, {}
+  has_status_field :status, mapping: {pending: 1, accepted: 2, delivered: 3}
 end
 
 # # Controllers

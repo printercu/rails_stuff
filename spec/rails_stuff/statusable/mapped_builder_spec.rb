@@ -9,7 +9,8 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
       extend described_class
       const_set(:STATUSES_MAPPING, confirmed: 1, rejected: 3)
       has_status_field validate: false
-      has_status_field :delivery_status, {sent: 1, complete: 4},
+      has_status_field :delivery_status,
+        mapping: {sent: 1, complete: 4},
         prefix: :delivery_
       has_status_field :delivery_method, {pickup: 1, local: 2, international: 3},
         suffix: :_delivery

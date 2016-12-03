@@ -55,6 +55,8 @@ module RailsStuff
     #
     # - `builder`   - custom methods builder class.
     #
+    # - `mapping`   - shortcut for `statuses` param (see examples).
+    #
     # Pass block to customize methods generation process (see Builder for available methods):
     #
     #   # This will define only scope with status names, but no other methods.
@@ -62,8 +64,22 @@ module RailsStuff
     #     builder.value_scopes
     #   end
     #
-    def has_status_field(field = :status, statuses = nil, **options)
-      statuses ||= Statusable.fetch_statuses(self, field)
+    # Examples:
+    #
+    #   # Setup #status field, take list from STATUSES or STATUSES_MAPPING constant.
+    #   has_status_field
+    #   # Custom field, take kist from KINDS or KINDS_MAPPING:
+    #   has_status_field :kind
+    #   # Inline statuses list and options:
+    #   has_status_field :status, %i(one two), prefix: :my_
+    #   has_status_field :status, {one: 1, two: 2}, prefix: :my_
+    #   has_status_field :status, mapping: {one: 1, two: 2}, prefix: :my_
+    #   # Mapped field without options:
+    #   has_status_field :status, {one: 1, two: 2}, {}
+    #   has_status_field :status, mapping: {one: 1, two: 2}
+    #
+    def has_status_field(field = :status, statuses = nil, mapping: nil, **options)
+      statuses ||= mapping || Statusable.fetch_statuses(self, field)
       is_mapped = statuses.is_a?(Hash)
       helper_class = options.fetch(:helper) { is_mapped ? MappedHelper : Helper }
       helper = helper_class.new(self, field, statuses)
