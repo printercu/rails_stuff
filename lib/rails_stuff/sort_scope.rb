@@ -30,6 +30,7 @@ module RailsStuff
     def has_sort_scope(config = {})
       @@_sort_scope_id ||= 0
       default = config[:default] || :id
+      default = default.is_a?(Hash) ? default.stringify_keys : default.to_s
       allowed = Array.wrap(config[:by]).map(&:to_s)
       only_actions = config.fetch(:only, :index)
       order_method = config.fetch(:order_method, :order)
@@ -42,12 +43,30 @@ module RailsStuff
         type:         :any,
       ) do |c, scope, val|
         sort_args = SortScope.filter_param(val, c.params, allowed, default)
+        c.instance_variable_set(:@current_sort_scope, sort_args)
         scope.public_send(order_method, sort_args)
       end
     end
     # rubocop:enable ClassVars
 
+    # It does not use `ClassMethods` similar to `ActiveSupport::Concern`
+    # due to backward compatibility (SortScope extends controller class).
+    module InstanceMethods
+      protected
+
+      def current_sort_scope
+        @current_sort_scope ||= {}
+      end
+    end
+
     class << self
+      def extended(base)
+        base.class_eval do
+          include InstanceMethods
+          helper_method :current_sort_scope if respond_to?(:helper_method)
+        end
+      end
+
       # Filters value with whitelist of allowed fields to sort by.
       #
       # rubocop:disable CyclomaticComplexity, PerceivedComplexity, BlockNesting

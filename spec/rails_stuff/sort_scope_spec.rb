@@ -83,16 +83,47 @@ RSpec.describe RailsStuff::SortScope do
       allow(controller).to receive(:params) do
         ActionController::Parameters.new(params.as_json)
       end
-      sql = controller.send(:apply_scopes, model).order_values.map(&:to_sql).join("\n")
+      sql = controller.send(:apply_scopes, model).all.order_values.map(&:to_sql).join("\n")
       expect(sql).to eq expected
+    end
+
+    def assert_current_scope(expected)
+      expect(controller.send(:current_sort_scope)).to eq expected.stringify_keys
+    end
+
+    context 'when is not called' do
+      it 'does not sort at all' do
+        assert_sort_query '', sort: {package_name: :desc, id: :asc}
+      end
     end
 
     context 'when sorting by multiple fields is allowed' do
       before { controller_class.has_sort_scope by: [:id, :package_name] }
 
       it 'applies all scopes' do
-        assert_sort_query %("users"."package_name" DESC\n"users"."id" ASC),
-          sort: {package_name: :desc, id: :asc, qqq: :desc}
+        assert_current_scope({})
+        assert_sort_query %("users"."package_name" ASC\n"users"."id" DESC),
+          sort: {package_name: :asc, id: :desc, qqq: :desc}
+        assert_current_scope package_name: :asc, id: :desc
+        assert_sort_query '"users"."id" ASC' # default `default` is `:id`
+        assert_current_scope id: :asc
+        assert_sort_query '', sort: {qqq: :desc}
+        assert_current_scope({})
+      end
+
+      context 'and action is not index' do
+        let(:action) { :some_action }
+        before { allow(controller).to receive(:action_name) { action } }
+        it 'does not sort at all' do
+          assert_sort_query '', sort: {package_name: :desc, id: :asc}
+        end
+
+        context 'but matches :only option' do
+          before { controller_class.has_sort_scope by: [:id], only: action }
+          it 'applies scopes' do
+            assert_sort_query %("users"."id" ASC), sort: {package_name: :desc, id: :asc}
+          end
+        end
       end
     end
 
@@ -111,8 +142,18 @@ RSpec.describe RailsStuff::SortScope do
 
       it 'and uses it' do
         assert_sort_query '"users"."package_name" ASC'
+        assert_current_scope package_name: :asc
         assert_sort_query '"users"."package_name" DESC', sort_desc: true
         assert_sort_query '"users"."package_name" ASC', sort: :qqq
+      end
+    end
+
+    context 'accepts default hash value' do
+      before { controller_class.has_sort_scope by: [:id], default: {package_name: :desc} }
+
+      it 'and uses it' do
+        assert_sort_query '"users"."package_name" DESC'
+        assert_current_scope package_name: :desc
       end
     end
 
@@ -123,7 +164,7 @@ RSpec.describe RailsStuff::SortScope do
       end
 
       it 'uses this method instead of sort' do
-        expect(model).to receive(:sort_by).with(id: :asc).and_call_original
+        expect(model).to receive(:sort_by).with('id' => :asc).and_call_original
         assert_sort_query '"users"."my_id" DESC'
       end
     end

@@ -166,6 +166,9 @@ has_sort_scope by: [:name, :created_at, :balance], default: [:name]
 #   - `sort=name&sort_desc=true`
 #   - `sort[name]&sort[created_at]`
 #   - `sort[name]&sort[created_at]=desc
+
+# access current sort scope hash with
+current_sort_scope # => {'name' => :desc} or {'name' => :asc, 'id' => :desc}
 ```
 
 Requires `gem 'has_scope'`.
