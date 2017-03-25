@@ -5,11 +5,19 @@ require 'support/active_record'
 require 'kaminari'
 require 'has_scope'
 require 'activemodel_translation/helper'
+RailsStuff::RSpec.setup only: %w(groups/request rails clear_logs)
 Kaminari::Hooks.init
 
+ENV['RAILS_ENV'] = 'test'
+class TestApplication < Rails::Application
+  config.eager_load = false
+  config.log_level = :debug
+  secrets[:secret_key_base] = 'test'
+end
+Rails.application.initialize!
+
 # # Routes
-TestRoutes = ActionDispatch::Routing::RouteSet.new
-TestRoutes.draw do
+Rails.application.routes.draw do
   namespace :site do
     resources :users do
       resources :projects, shallow: true
@@ -17,14 +25,6 @@ TestRoutes.draw do
     resources :forms, only: :index
   end
 end
-
-# Make rspec-rails to work without full rails app.
-application = OpenStruct.new(
-  routes: TestRoutes,
-  env_config: {},
-  config: OpenStruct.new(root: GEM_ROOT.join('spec/support')),
-)
-Rails.define_singleton_method(:application) { application }
 
 # # Models
 module BuildDefault
@@ -86,7 +86,7 @@ end
 # # Controllers
 class ApplicationController < ActionController::Base
   extend RailsStuff::ResourcesController
-  include TestRoutes.url_helpers
+  include Rails.application.routes.url_helpers
   self.view_paths = GEM_ROOT.join('spec/support/app/views')
 end
 

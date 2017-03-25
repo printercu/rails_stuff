@@ -1,6 +1,6 @@
 require 'integration_helper'
 
-RSpec.describe Site::ProjectsController, :db_cleaner, type: :controller do
+RSpec.describe Site::ProjectsController, :db_cleaner, type: :request do
   let(:user) { User.create_default! }
   let(:user_id) { user.id }
   let(:resource) { Project.create_default!(user: user) }
@@ -10,8 +10,8 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :controller do
   let(:controller_resource) { controller.send :resource }
 
   describe '#index' do
-    subject { get :index, params: params }
-    let(:params) { {user_id: user.id} }
+    subject { get controller_path(user_id: user.id), params: params }
+    let(:params) { {} }
     before { resource && other_resource }
 
     it 'renders index, and limits collection to parent`s resources' do
@@ -30,14 +30,13 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :controller do
     end
 
     context 'when parent is not found' do
-      let(:params) { {user_id: -1} }
-      render_views
+      before { user.destroy }
       it { should be_not_found }
     end
   end
 
   describe '#create' do
-    subject { post :create, params: {user_id: user_id, project: resource_params} }
+    subject { post controller_path(user_id: user_id), params: params }
     let(:resource_params) do
       {
         name: 'New project',
@@ -99,7 +98,7 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :controller do
   end
 
   describe '#update' do
-    subject { patch :update, params: {id: resource_id, project: resource_params} }
+    subject { patch(resource_path, params: params) }
     let(:resource_params) do
       {
         name: 'New project',
@@ -157,7 +156,7 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :controller do
   end
 
   describe '#destroy' do
-    subject { -> { delete :destroy, params: {id: resource.id} } }
+    subject { -> { delete(resource_path) } }
     it { should change { resource.class.exists?(resource.id) }.to false }
     its(:call) { should redirect_to site_user_projects_path(user) }
   end

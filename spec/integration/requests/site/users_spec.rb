@@ -1,13 +1,13 @@
 require 'integration_helper'
 
-RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
+RSpec.describe Site::UsersController, :db_cleaner, type: :request do
   let(:resource) { User.create_default! }
   let(:resource_id) { resource.id }
   let(:other_resource) { User.create_default!(email: 'other@example.com') }
   let(:controller_resource) { controller.send :resource }
 
   describe '#index' do
-    subject { get :index, params: params }
+    subject { get controller_path, params: params }
     let(:params) { {} }
     let(:collection) do
       should render_template :index
@@ -45,7 +45,7 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
   end
 
   describe '#show' do
-    subject { get :show, params: {id: resource_id} }
+    subject { get resource_path }
 
     it 'finds resource and renders template' do
       should render_template :show
@@ -53,14 +53,14 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
     end
 
     context 'when resource is not found' do
-      let(:resource_id) { -1 }
-      render_views
+      before { resource.destroy }
       it { should be_not_found }
     end
   end
 
   describe '#new' do
-    subject { get :new, params: {user: {name: 'New name', admin: true}} }
+    subject { get controller_path(action: :new), params: params }
+    let(:resource_params) { {name: 'New name', admin: true} }
 
     it 'initializes new resource' do
       should render_template :new
@@ -73,19 +73,18 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
   end
 
   describe '#create' do
-    context 'when create succeeds' do
-      subject { post :create, params: {user: {name: 'New name', email: 'test', admin: true}} }
+    subject { post controller_path, params: params }
+    let(:resource_params) { {name: 'New name', email: 'test', admin: true} }
 
-      it 'redirects to created user path' do
-        expect { should be_redirect }.to change(User, :count).by(1)
-        resource = User.last
-        expect(resource.name).to eq 'New name'
-        should redirect_to site_user_path(resource)
-      end
+    it 'redirects to created user path' do
+      expect { should be_redirect }.to change(User, :count).by(1)
+      resource = User.last
+      expect(resource.name).to eq 'New name'
+      should redirect_to site_user_path(resource)
     end
 
     context 'when create fails' do
-      subject { post :create, params: {user: {name: 'New name', admin: true}} }
+      let(:resource_params) { super().except(:email) }
 
       it 'renders :new' do
         expect { should render_template :new }.to_not change(User, :count)
@@ -98,7 +97,7 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
   end
 
   describe '#edit' do
-    subject { get :edit, params: {id: resource_id} }
+    subject { get resource_path(action: :edit) }
 
     it 'finds resource and renders template' do
       should render_template :edit
@@ -106,14 +105,13 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
     end
 
     context 'when resource is not found' do
-      let(:resource_id) { -1 }
-      render_views
+      before { resource.destroy }
       it { should be_not_found }
     end
   end
 
   describe '#update' do
-    subject { patch :update, params: {id: resource_id, user: resource_params} }
+    subject { patch resource_path, params: params }
     let(:resource_params) { {name: 'New name', admin: true} }
 
     context 'when update succeeds' do
@@ -139,13 +137,13 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
     end
 
     context 'when resource is not found' do
-      let(:resource_id) { -1 }
+      before { resource.destroy }
       it { should be_not_found }
     end
   end
 
   describe '#destroy' do
-    subject { delete :destroy, params: {id: resource_id} }
+    subject { delete resource_path }
 
     context 'when destroy succeeds' do
       it 'redirects to index' do
@@ -170,13 +168,13 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :controller do
     end
 
     context 'when resource is not found' do
-      let(:resource_id) { -1 }
+      before { resource.destroy }
       it { should be_not_found }
     end
   end
 
-  describe '#action_methods' do
-    subject { controller.action_methods }
+  describe '.action_methods' do
+    subject { described_class.action_methods }
     it { should_not include 'source_for_collection' }
   end
 end

@@ -1,10 +1,14 @@
 require 'integration_helper'
 require 'support/shared/statusable'
 
-RSpec.describe Site::FormsController, type: :controller do
+RSpec.describe Site::FormsController, type: :request do
   describe '#index' do
-    subject { get :index }
-    render_views
+    subject { get controller_path }
+
+    # For rails-4
+    def document_root_element
+      html_document.root
+    end
 
     include_context 'statusable'
     before { add_translations(status: Order.statuses.list + Customer.statuses.list) }

@@ -16,6 +16,7 @@ group :development do
   gem 'has_scope', '~> 0.7.0'
   gem 'responders', '~> 2.1.0'
   gem 'kaminari', '~> 0.16.3'
+  gem 'hashie', '~> 3.4.0'
 
   gem 'rspec-rails', '~> 3.5.2'
   gem 'rspec-its', '~> 1.2.0'

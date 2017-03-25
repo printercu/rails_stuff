@@ -19,6 +19,8 @@ RSpec.configure do |config|
       config.include ::Rails::Controller::Testing::Integration, type: type
     end
   else
-    config.include Support::ControllerBackport, type: :controller
+    [:controller, :request].each do |type|
+      config.include Support::ControllerBackport, type: type
+    end
   end
 end
