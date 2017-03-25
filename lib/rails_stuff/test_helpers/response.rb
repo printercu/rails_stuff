@@ -15,6 +15,14 @@ module RailsStuff
         end
       end
 
+      # Missing enquirers.
+      {
+        unprocessable_entity: 422,
+        no_content: 204,
+      }.each do |name, code|
+        define_method("#{name}?") { status == code }
+      end
+
       # Easy access to json bodies. It parses and return `Hashie::Mash`'es, so
       # properties can be accessed via method calls:
       #
@@ -29,6 +37,8 @@ module RailsStuff
       def inspect
         "<Response(#{status})>"
       end
+
+      ActionDispatch::TestResponse.send(:include, self) if defined?(ActionDispatch)
     end
   end
 end

@@ -58,8 +58,7 @@ __[Helpers usage](#helpers-usage)__
 
 - __Response__
   `#json_body` to test json responses.
-- __Configurator__
-  Provides useful basic configuration for RSpec.
+- Useful RSpec configurations, helpers and matchers for better experience.
 - __Concurrency__
   Helpers for testing with concurrent requests.
 
@@ -414,8 +413,13 @@ switch locales while rendering single view.
 
 ### Test helpers usage
 
-Add `require 'rails_stuff/test_helpers/rails'` to `test_helper.rb`.
+Add `RailsStuff::RSpec.setup` to `rails_helper.rb` to load all the stuff or
+pick from `rails_stuff/test_helpers/` and `rails_stuff/rspec`.
 
+Please check the source for complete list of helpers, while this section is not
+well-documented.
+
+#### `json_body`
 ```ruby
 assert_equal({'id' => 1, 'name' => 'John'}, response.json_body)
 assert_equal('John', response.json_body['name'])
@@ -435,17 +439,29 @@ Use `json_body['key']` instead.
 
 There is `Configurator` with useful RSpec configs:
 
+#### RSpec configurations
+
 ```ruby
-RSpec.configure do |config|
-  RailsStuff::TestHelpers::Configurator.tap do |configurator|
-    # Setup DatabaseCleaner with basic settings:
-    configurator.database_cleaner(config)
-    # Flush redis after suite and exampes with `flush_redis: true`:
-    configurator.redis(config)
-    # Run debugger after failed tests:
-    configurator.debug(config)
-  end
-end
+# Setup DatabaseCleaner with basic settings:
+RailsStuff::RSpec.database_cleaner
+
+# Flush redis after suite and exampes with `flush_redis: true`:
+RailsStuff::RSpec.redis
+
+# Run debugger after failed tests:
+RailsStuff::RSpec.debug
+
+# Clear log/test.log after suite:
+RailsStuff::RSpec.clear_logs
+
+# Raise errors from threads:
+RailsStuff::RSpec.thread
+
+# Raise errors for all missing I18n translation:
+RailsStuff::RSpec.i18n
+
+# Freeze time with for group/example with `:frozen_time` metadata (requires timecop gem):
+RailsStuff::RSpec.frozen_time
 ```
 
 ### PluginManager
