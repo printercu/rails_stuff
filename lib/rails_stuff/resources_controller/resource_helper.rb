@@ -2,6 +2,15 @@ module RailsStuff
   module ResourcesController
     # Defines resource helper and finder method.
     module ResourceHelper
+      class << self
+        def deprecation
+          @deprecation ||= begin
+            require 'active_support/deprecation'
+            ActiveSupport::Deprecation.new('0.7', 'RailsStuff')
+          end
+        end
+      end
+
       # Defines protected helper method. Ex. for `:user`
       #
       #     helper_method :user
@@ -12,26 +21,35 @@ module RailsStuff
       #
       # #### Options
       #
-      # - `class` - class name, default to `resource_name.classify`
+      # - `source` - class name or Proc returning relation, default to `resource_name.classify`.
       # - `param` - param name, default to `resource_name.foreign_key`
-      def resource_helper(resource_name, **options)
-        helper_method resource_name, :"#{resource_name}?"
-        resource_name = resource_name.to_s
-        class_name = options[:class] || resource_name.classify
-        param_key = options[:param] || resource_name.foreign_key
+      #
+      # rubocop:disable CyclomaticComplexity, PerceivedComplexity, AbcSize
+      def resource_helper(name, param: nil, source: nil, **options)
+        ResourceHelper.deprecation.warn('use :source instead of :class') if options.key?(:class)
 
-        class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          protected
+        param ||= name.to_s.foreign_key.to_sym
+        define_method("#{name}?") { params.key?(param) }
 
-          def #{resource_name}
-            @#{resource_name} ||= #{class_name}.find(params[:#{param_key}])
+        ivar = :"@#{name}"
+        source ||= options[:class] || name.to_s.classify
+        if source.is_a?(Proc)
+          define_method(name) do
+            instance_variable_get(ivar) ||
+              instance_variable_set(ivar, instance_exec(&source).find(params[param]))
           end
-
-          def #{resource_name}?
-            params.key?(:#{param_key})
+        else
+          source = Object.const_get(source) unless source.is_a?(Class)
+          define_method(name) do
+            instance_variable_get(ivar) ||
+              instance_variable_set(ivar, source.find(params[param]))
           end
-        RUBY
+        end
+
+        helper_method name, :"#{name}?"
+        protected name, :"#{name}?"
       end
+      # rubocop:enable CyclomaticComplexity, PerceivedComplexity, AbcSize
     end
   end
 end
