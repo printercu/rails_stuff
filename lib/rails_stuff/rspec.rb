@@ -1,8 +1,9 @@
+require 'active_support/core_ext/array/wrap'
 require 'active_support/dependencies/autoload'
 
 module RailsStuff
   # Collection of RSpec configurations and helpers for better experience.
-  module RSpec
+  module RSpec # rubocop:disable ModuleLength
     # From TestHelpers module.
     BASIC_ITEMS = %w(
       integration_session
@@ -46,6 +47,7 @@ module RailsStuff
 
     # Raise all translation errors, to not miss any of translations.
     def i18n
+      return unless defined?(I18n)
       I18n.config.exception_handler = ->(exception, _locale, _key, _options) do
         raise exception.respond_to?(:to_exception) ? exception.to_exception : exception
       end
@@ -64,18 +66,26 @@ module RailsStuff
     #
     # Other types can be tuned with `config.cleaner_strategy` hash &
     # `config.cleaner_strategy.default`.
-    def database_cleaner
-      require 'database_cleaner'
+    def database_cleaner # rubocop:disable AbcSize
+      return unless defined?(DatabaseCleaner)
       ::RSpec.configure do |config|
-        config.use_transactional_fixtures = false
-        config.add_setting :cleaner_strategy
-        config.cleaner_strategy = {feature: :truncation}
-        config.cleaner_strategy.default = :transaction
-        config.around do |ex|
+        if config.respond_to?(:use_transactional_fixtures=)
+          config.use_transactional_fixtures = false
+        end
+        config.add_setting :database_cleaner_strategy
+        config.database_cleaner_strategy = {feature: :truncation}
+        config.database_cleaner_strategy.default = :transaction
+        config.add_setting :database_cleaner_options
+        config.database_cleaner_options = {truncation: {except: %w(spatial_ref_sys)}}
+        config.add_setting :database_cleaner_args
+        config.database_cleaner_args = ->(ex) do
           strategy = ex.metadata[:concurrent] && :truncation
-          strategy ||= config.cleaner_strategy[ex.metadata[:type]]
-          options = strategy == :truncation ? {except: %w(spatial_ref_sys)} : {}
-          DatabaseCleaner.strategy = strategy, options
+          strategy ||= config.database_cleaner_strategy[ex.metadata[:type]]
+          options = config.database_cleaner_options[strategy] || {}
+          [strategy, options]
+        end
+        config.around do |ex|
+          DatabaseCleaner.strategy = config.database_cleaner_args.call(ex)
           DatabaseCleaner.cleaning { ex.run }
         end
       end
@@ -88,8 +98,10 @@ module RailsStuff
       ::RSpec.configure do |config|
         config.add_setting :redis
         config.redis = Rails.redis if defined?(Rails.redis)
-        config.before(flush_redis: true) { config.redis.flushdb }
-        config.after(:suite) { config.redis.flushdb }
+        config.add_setting :flush_redis_proc
+        config.flush_redis_proc = ->(*) { Array.wrap(config.redis).each(&:flushdb) }
+        config.before(flush_redis: true) { instance_exec(&config.flush_redis_proc) }
+        config.after(:suite) { instance_exec(&config.flush_redis_proc) }
       end
     end
 
@@ -97,13 +109,13 @@ module RailsStuff
     # Uses `pry` by default, this can be configured `config.debugger=`.
     def debug
       ::RSpec.configure do |config|
-        config.add_setting :debugger
-        config.debugger = :pry
+        config.add_setting :debugger_proc
+        config.debugger_proc = ->(ex) do
+          exception = ex.exception
+          defined?(Pry) ? binding.pry : debugger # rubocop:disable Debugger
+        end
         config.after(debug: true) do |ex|
-          if ex.exception
-            :pry == config.debugger ? binding.pry : debugger # rubocop:disable Debugger
-            ex.exception # noop to not exit frame
-          end
+          instance_exec(ex, &config.debugger_proc) if ex.exception
         end
       end
     end
@@ -112,11 +124,15 @@ module RailsStuff
     def clear_logs
       ::RSpec.configure do |config|
         config.add_setting :clear_log_file
-        config.after(:suite) do
-          next if ENV['KEEP_LOG']
-          file = config.clear_log_file || Rails.root.join('log', 'test.log')
+        config.clear_log_file = Rails.root.join('log', 'test.log') if defined?(Rails.root)
+        config.add_setting :clear_log_file_proc
+        config.clear_log_file_proc = ->(file) do
+          next unless file && File.exist?(file)
           FileUtils.cp(file, "#{file}.last")
           File.open(file, 'w').close
+        end
+        config.after(:suite) do
+          instance_exec(config.clear_log_file, &config.clear_log_file_proc) unless ENV['KEEP_LOG']
         end
       end
     end

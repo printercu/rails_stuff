@@ -5,7 +5,6 @@ require 'support/active_record'
 require 'kaminari'
 require 'has_scope'
 require 'activemodel_translation/helper'
-RailsStuff::RSpec.setup only: %w(groups/request rails clear_logs)
 Kaminari::Hooks.init
 
 ENV['RAILS_ENV'] = 'test'
@@ -25,6 +24,8 @@ Rails.application.routes.draw do
     resources :forms, only: :index
   end
 end
+
+RailsStuff::RSpec.setup only: %w(groups/request rails clear_logs)
 
 # # Models
 module BuildDefault
