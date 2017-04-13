@@ -5,10 +5,20 @@ module RailsStuff
 
   module VERSION #:nodoc:
     MAJOR = 0
-    MINOR = 5
-    TINY  = 1
-    PRE   = nil
+    MINOR = 6
+    TINY  = 0
+    PRE   = 'rc1'.freeze
 
     STRING = [MAJOR, MINOR, TINY, PRE].compact.join('.')
+
+    class << self
+      def to_s
+        STRING
+      end
+
+      def inspect
+        STRING.inspect
+      end
+    end
   end
 end

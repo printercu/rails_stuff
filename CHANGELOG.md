@@ -1,9 +1,14 @@
 ## Unreleased
 
+## 0.6.0.rc1
+
 ### Controllers
 
 - Don't overwrite :location option if present.
 - Don't overwrite responder and `respond_with`'s mimes.
+- `#current_sort_scope` to access applied sorting rules.
+- `.resource_helper` has `source` option, which accepts lambdas and strings.
+  `class` option is deprecated now in favour of `source`.
 
 ### Models
 
@@ -13,6 +18,12 @@
     There is single `statuses` method for statusable field which holds all helpers.
   - `.select_options` supports `:only` option.
   - Helpers to map/unmap values for mapped statuses from external code.
+
+### Tests
+
+- A lot of new test and rspec helpers and configs (see RSpecHelpers, TestHelpers).
+- `RSpecHelpers.setup` & `TestHelpers.setup` to setup helpers instead of requiring
+  files. This methods accepts `only` & `except` options.
 
 ### Misc
 
