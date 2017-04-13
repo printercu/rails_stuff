@@ -8,7 +8,7 @@ module RailsStuff
     random_uniq_attr:     :model,
     statusable:           :model,
     resources_controller: [
-      :controller,
+      -> { defined?(::Responders) && :controller },
       -> { ResourcesController.use_kaminari! if defined?(::Kaminari) },
     ],
     sort_scope: -> { defined?(::HasScope) && :controller },
