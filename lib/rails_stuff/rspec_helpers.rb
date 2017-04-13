@@ -3,61 +3,37 @@ require 'active_support/dependencies/autoload'
 
 module RailsStuff
   # Collection of RSpec configurations and helpers for better experience.
-  module RSpec # rubocop:disable ModuleLength
-    # From TestHelpers module.
-    BASIC_ITEMS = %w(
-      integration_session
-      response
-    ).freeze
-
-    # From RSpec module.
-    ITEMS = %w(
-      concurrency
-      groups/request
-      groups/feature
-      matchers/be_valid_js
-      matchers/redirect_with_turbolinks
-    ).freeze
-
-    autoload :Signinable, 'rails_stuff/rspec/signinable'
+  module RSpecHelpers
+    autoload :Signinable, 'rails_stuff/rspec_helpers/signinable'
 
     extend self
 
     # Single endpoint for multiple seups. Use `:only` and `:except` options
     # to filter actions.
     def setup(only: nil, except: nil)
-      items = BASIC_ITEMS + ITEMS + instance_methods.map(&:to_s) - %w(setup)
+      items = instance_methods.map(&:to_s) - %w(setup)
       items -= Array.wrap(except).map(&:to_s) if except
-      items &= Array.wrap(only).map(&:to_s) if only
-      items.each do |item|
-        if respond_to?(item)
-          public_send(item)
-        elsif BASIC_ITEMS.include?(item)
-          require "rails_stuff/test_helpers/#{item}"
-        else
-          require "rails_stuff/rspec/#{item}"
-        end
+      if only
+        only = Array.wrap(only).map(&:to_s)
+        items &= only
+        items += only
       end
+      items.uniq.each { |item| public_send(item) }
     end
 
-    # Raise errors from failed threads.
-    def thread
-      Thread.abort_on_exception = true
+    %w(
+      concurrency
+      groups/request
+      groups/feature
+      matchers/be_valid_js
+      matchers/redirect_with_turbolinks
+    ).each do |file|
+      define_method(file) { require "rails_stuff/rspec_helpers/#{file}" }
     end
 
-    # Raise all translation errors, to not miss any of translations.
-    def i18n
-      return unless defined?(I18n)
-      I18n.config.exception_handler = ->(exception, _locale, _key, _options) do
-        raise exception.respond_to?(:to_exception) ? exception.to_exception : exception
-      end
-    end
-
-    # All rails helpers from TestHelpers.
-    def rails
-      require 'action_dispatch'
-      require 'rails_stuff/test_helpers/response'
-      require 'rails_stuff/test_helpers/integration_session'
+    # Setup all TestHelpers.
+    def test_helpers
+      TestHelpers.setup
     end
 
     # Setups database cleaner to use strategy depending on metadata.

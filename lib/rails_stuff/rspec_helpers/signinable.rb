@@ -1,5 +1,5 @@
 module RailsStuff
-  module RSpec
+  module RSpecHelpers
     module Signinable
       # Context-level helper to add before filter to sign in user.
       # Adds `current_user` with let if not defined yet or with gven block.

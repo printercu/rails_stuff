@@ -1,7 +1,7 @@
 require 'active_support/concern'
 
 module RailsStuff
-  module RSpec
+  module RSpecHelpers
     module Groups
       module Request
         extend ActiveSupport::Concern
@@ -9,9 +9,10 @@ module RailsStuff
         included do
           # Define default params for ResourcesController.
           #
-          #   subject { -> { post(resource_path, params: params) } }
+          #   subject { -> { patch(resource_path, params: params) } }
           #   let(:resource) { create(:user) }
           #   let(:resource_params) { {name: 'new name'} }
+          #   # params will be {user: {name: 'new name'}}
           if described_class.respond_to?(:resource_param_name)
             let(:params) { {described_class.resource_param_name => resource_params} }
           end

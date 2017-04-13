@@ -2,7 +2,7 @@ require 'active_support/concern'
 require 'rails_stuff/test_helpers/concurrency'
 
 module RailsStuff
-  module RSpec
+  module RSpecHelpers
     module Concurrency
       extend ActiveSupport::Concern
       include RailsStuff::TestHelpers::Concurrency

@@ -15,9 +15,10 @@ module RailsStuff
   autoload :RequireNested
   autoload :ResourcesController
   autoload :Responders
-  autoload :RSpec, 'rails_stuff/rspec'
+  autoload :RSpecHelpers, 'rails_stuff/rspec_helpers'
   autoload :SortScope
   autoload :Statusable
+  autoload :TestHelpers, 'rails_stuff/test_helpers'
   autoload :TypesTracker
 
   module_function

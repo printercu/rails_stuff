@@ -1,5 +1,5 @@
 module RailsStuff
-  module RSpec
+  module RSpecHelpers
     module Matchers
       module RedirectWithTurbolinks
         include ::RSpec::Matchers

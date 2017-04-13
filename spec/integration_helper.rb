@@ -25,7 +25,8 @@ Rails.application.routes.draw do
   end
 end
 
-RailsStuff::RSpec.setup only: %w(groups/request rails clear_logs)
+RailsStuff::TestHelpers.setup only: %w(integration_session)
+RailsStuff::RSpecHelpers.setup only: %w(groups/request clear_logs)
 
 # # Models
 module BuildDefault

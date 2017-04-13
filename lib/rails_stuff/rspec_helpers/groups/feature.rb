@@ -1,5 +1,5 @@
 module RailsStuff
-  module RSpec
+  module RSpecHelpers
     module Groups
       module Feature
         def wait_for_ajax

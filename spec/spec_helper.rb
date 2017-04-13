@@ -14,6 +14,7 @@ GEM_ROOT = Pathname.new File.expand_path('../..', __FILE__)
 
 $LOAD_PATH.unshift GEM_ROOT.join('lib')
 require 'rails_stuff'
+RailsStuff::TestHelpers.big_decimal
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
@@ -71,13 +72,6 @@ RSpec.configure do |config|
   # test failures related to randomization by passing the same `--seed` value
   # as the one that triggered the failure.
   Kernel.srand config.seed
-
-  # Make it more convenient.
-  require 'bigdecimal'
-  BigDecimal.class_eval do
-    alias_method :inspect_orig, :inspect
-    alias_method :inspect, :to_s
-  end
 end
 
 require 'active_support/core_ext/object/try'
