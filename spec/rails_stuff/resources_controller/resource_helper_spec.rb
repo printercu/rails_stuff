@@ -20,7 +20,7 @@ RSpec.describe RailsStuff::ResourcesController::ResourceHelper do
       it 'generates helper methods' do
         expected_methods = [method, :"#{method}?"]
         expect(klass).to receive(:helper_method).with(*expected_methods)
-        should change(klass, :protected_instance_methods).by(expected_methods)
+        should change { klass.protected_instance_methods.sort }.by(expected_methods)
       end
     end
 
