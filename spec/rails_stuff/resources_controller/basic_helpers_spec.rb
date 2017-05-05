@@ -109,7 +109,8 @@ RSpec.describe RailsStuff::ResourcesController::BasicHelpers do
     context 'when resource key is not present in params' do
       before { klass.resource_param_name = :company }
       its(:call) { should be_instance_of(params_class) }
-      its(:call) { should eq(params_class.new) }
+      its(:call) { should eq(params_class.new.permit!) }
+      its('call.permitted?') { should eq true }
     end
   end
 

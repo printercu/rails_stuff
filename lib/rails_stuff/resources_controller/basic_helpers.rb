@@ -119,7 +119,7 @@ module RailsStuff
       def resource_params
         @_resource_params ||= begin
           key = self.class.resource_param_name
-          params.permit(key => permitted_attrs)[key] || params.class.new
+          params.permit(key => permitted_attrs)[key] || params.class.new.permit!
         end
       end
 

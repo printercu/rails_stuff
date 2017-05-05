@@ -1,5 +1,9 @@
 ## Unreleased
 
+### Controllers
+
+- `resource_params` returns permited hash when resource key is not present in `params`.
+
 ## 0.6.0.rc1
 
 ### Controllers
