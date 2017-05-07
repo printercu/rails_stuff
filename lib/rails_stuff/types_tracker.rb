@@ -43,15 +43,6 @@ module RailsStuff
       types_list.delete self
     end
 
-    # Shortcut to eager load all descendants.
-    def eager_load_types!(dir = nil)
-      RequireNested.require_nested(dir || 2) # skip 1 more because of deprecation
-    end
-
-    ActiveSupport::Deprecation.deprecate_methods self,
-      deprecator: ActiveSupport::Deprecation.new('0.6', 'RailsStuff'),
-      eager_load_types!: 'Use RequireNested.require_nested instead'
-
     # Tracks all descendants automatically.
     def inherited(base)
       super
