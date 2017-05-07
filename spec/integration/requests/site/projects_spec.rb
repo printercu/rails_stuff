@@ -36,7 +36,7 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :request do
   end
 
   describe '#create' do
-    subject { post controller_path(user_id: user_id), params: params }
+    subject { -> { post controller_path(user_id: user_id), params: params } }
     let(:resource_params) do
       {
         name: 'New project',
@@ -49,7 +49,7 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :request do
 
     context 'when create succeeds' do
       it 'redirects to created user path' do
-        expect { should be_redirect }.to change { user.projects.count }.by(1)
+        should change { user.projects.count }.by(1)
         resource = user.projects.last
         expect(resource.attributes).to include(
           'name' => 'New project',
@@ -61,7 +61,7 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :request do
 
       it 'respects per-type allowed attributes' do
         resource_params[:type] = 'Project::External'
-        should be_redirect
+        should change { user.projects.count }.by(1)
         resource = user.projects.last
         should redirect_to site_project_path(resource)
         expect(resource.attributes).to include(
@@ -76,7 +76,8 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :request do
       let(:resource_params) { super().except(:name) }
 
       it 'renders index' do
-        expect { should render_template :index }.to_not change(Project, :count)
+        should_not change(Project, :count)
+        expect(response).to render_template :index
         expect(controller_resource.attributes).to include(
           'user_id' => user.id,
           'name' => nil,
@@ -88,12 +89,12 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :request do
 
     context 'when invalid type is requested' do
       let(:resource_params) { super().merge(type: 'Project::Hidden') }
-      it { should be_not_found }
+      its(:call) { should be_unprocessable_entity }
     end
 
     context 'when parent is not found' do
       let(:user_id) { -1 }
-      it { should be_not_found }
+      its(:call) { should be_not_found }
     end
   end
 

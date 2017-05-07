@@ -59,5 +59,9 @@ module RailsStuff
     generators do
       require 'rails_stuff/generators/concern/concern_generator'
     end
+
+    config.action_dispatch.rescue_responses.merge!(
+      'RailsStuff::ResourcesController::StiHelpers::InvalidType' => :unprocessable_entity,
+    )
   end
 end

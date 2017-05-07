@@ -12,6 +12,10 @@ class TestApplication < Rails::Application
   config.eager_load = false
   config.log_level = :debug
   secrets[:secret_key_base] = 'test'
+
+  config.action_dispatch.rescue_responses.merge!(
+    'RailsStuff::ResourcesController::StiHelpers::InvalidType' => :unprocessable_entity,
+  )
 end
 Rails.application.initialize!
 
@@ -25,7 +29,7 @@ Rails.application.routes.draw do
   end
 end
 
-RailsStuff::TestHelpers.setup only: %w(integration_session)
+RailsStuff::TestHelpers.setup only: %w(integration_session response)
 RailsStuff::RSpecHelpers.setup only: %w(groups/request clear_logs)
 
 # # Models

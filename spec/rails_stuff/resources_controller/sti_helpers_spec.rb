@@ -55,12 +55,17 @@ RSpec.describe RailsStuff::ResourcesController::StiHelpers do
 
     context 'when invalid type is requested' do
       let(:params) { {user: {type: 'Project::External'}} }
-      it { should raise_error ActiveRecord::RecordNotFound }
+      it { should raise_error described_class::InvalidType }
+
+      context 'when use_resource_class_for_invalid_type is true' do
+        before { klass.use_resource_class_for_invalid_type = true }
+        its(:call) { should eq klass.resource_class }
+      end
     end
 
     context 'when params for resource is not given' do
       let(:params) { {project: {type: 'Project::External'}} }
-      it { should raise_error ActionController::ParameterMissing, /user/ }
+      its(:call) { should eq klass.resource_class }
     end
 
     context 'when id is present' do

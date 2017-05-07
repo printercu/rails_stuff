@@ -3,6 +3,9 @@
 ### Controllers
 
 - `resource_params` returns permited hash when resource key is not present in `params`.
+- `use_resource_class_for_invalid_type` option for STI helpers,
+  and `RailsStuff::ResourcesController::StiHelpers::InvalidType` error instead of
+  `ActiveRecord::NotFound` for invalid type.
 
 ## 0.6.0.rc1
 
