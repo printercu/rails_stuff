@@ -3,7 +3,15 @@
 [![Code Climate](https://codeclimate.com/github/printercu/rails_stuff/badges/gpa.svg)](https://codeclimate.com/github/printercu/rails_stuff)
 [![Build Status](https://travis-ci.org/printercu/rails_stuff.svg)](https://travis-ci.org/printercu/rails_stuff)
 
-Collection of useful modules for Rails.
+Collection of useful modules for ruby projects to provide great DRY, TDD experience.
+While some of them are Rails-specific, most will work in any environment
+ignoring gem's name.
+
+All modules are lazy loaded, so it's ok to require whole gem at once.
+Some of them are activated by default for best experience,
+but this can be configured or turned off (see [usage](#usage)).
+
+Works with ruby 2.0+, Rails 4.2+, 5+.
 
 #### Controllers:
 
@@ -89,7 +97,6 @@ Or install it yourself as:
 
 ## Usage
 
-All modules are lazy loaded, so it's ok to require whole gem at once.
 There is railtie which will include some of modules into `ActiveRecord::Base`
 and `ActionController::Base` by default. You can disable this behavior in
 initializer:
@@ -104,8 +111,6 @@ RailsStuff.load_modules = %i(sort_scope statusable)
 
 You can override base classes for controller/model with `.base_controller=`,
 `.base_model=`.
-
-Works only with ruby 2.0+, tested with Rails 4.2.
 
 There can be lack of documentation in README. Please navigate to module and
 check docs & code (press `t` on github) if you miss something.

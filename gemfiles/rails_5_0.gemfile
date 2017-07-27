@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 
 group :development do
-  gem "rails", "~> 4.0"
+  gem "rails", "~> 5.0.0"
   gem "appraisal", "~> 2.1.0"
   gem "sdoc", "~> 0.4.1"
   gem "pry", "~> 0.10.1"
@@ -20,6 +20,7 @@ group :development do
   gem "rspec-its", "~> 1.2.0"
   gem "rubocop", "~> 0.37.2"
   gem "coveralls", "~> 0.8.2", :require => false
+  gem "rails-controller-testing", "~> 0.1.1"
 end
 
 gemspec :path => "../"

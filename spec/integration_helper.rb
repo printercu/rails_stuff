@@ -44,7 +44,7 @@ module BuildDefault
 end
 
 class User < ActiveRecord::Base
-  has_many :projects
+  has_many :projects, dependent: :nullify
   validates_presence_of :name, :email
   scope :by_email, ->(val) { where(email: val) }
 

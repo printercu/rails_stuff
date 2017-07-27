@@ -11,7 +11,8 @@ ActiveRecord::Schema.define do
 
   create_table :projects, force: true do |t|
     t.string :name, null: false
-    t.belongs_to :user, null: false, foreign_key: true, index: true
+    # it's nullable intentionally for tests:
+    t.belongs_to :user, null: true, foreign_key: true, index: true
     t.string :type, null: false, index: true
 
     t.string :department

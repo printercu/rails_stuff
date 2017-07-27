@@ -14,11 +14,11 @@ group :development do
   gem 'pooled_redis', '~> 0.2.1'
   gem 'activemodel_translation', '~> 0.1.0'
   gem 'has_scope', '~> 0.7.0'
-  gem 'responders', '~> 2.1.0'
+  gem 'responders', '~> 2.1'
   gem 'kaminari', '~> 0.16.3'
   gem 'hashie', '~> 3.4.0'
 
-  gem 'rspec-rails', '~> 3.5.2'
+  gem 'rspec-rails', '~> 3.5'
   gem 'rspec-its', '~> 1.2.0'
 
   gem 'rubocop', '~> 0.37.2'
