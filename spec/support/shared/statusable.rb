@@ -11,14 +11,14 @@ RSpec.shared_context 'statusable' do
 
   if RailsStuff.rails4?
     def relation_values(relation)
-      where_sql = relation.where_values.map(&:to_sql).join
-      values_sql = relation.bind_values.map(&:second).join
+      where_sql = relation.where_values.map(&:to_sql)
+      values_sql = relation.bind_values.to_h.transform_values(&:to_s)
       [where_sql, values_sql]
     end
   else
     def relation_values(relation)
       where_sql = relation.where_clause.ast.to_sql
-      values_sql = relation.where_clause.binds.map(&:value).join
+      values_sql = relation.where_clause.to_h.transform_values(&:to_s)
       [where_sql, values_sql]
     end
   end
