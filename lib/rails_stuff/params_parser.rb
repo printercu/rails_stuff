@@ -44,16 +44,24 @@ module RailsStuff
     extend self
 
     # Parses value with specified block. Reraises occured error with Error.
-    def parse(val)
-      yield(val) unless val.nil?
+    def parse(val, *args, &block)
+      parse_not_blank(val, *args, &block)
     rescue => e
       raise Error.new(e.message, val), nil, e.backtrace
     end
 
     # Parses each value in array with specified block.
     # Returns `nil` if `val` is not an array.
-    def parse_array(val)
-      parse(val) { val.map { |x| yield x unless x.nil? } } if val.is_a?(Array)
+    def parse_array(array, *args, &block)
+      return unless array.is_a?(Array)
+      parse(array) { array.map { |val| parse_not_blank(val, *args, &block) } }
+    end
+
+    # Parses value with given block only when it is not nil.
+    # Empty string is converted to nil. Pass `allow_blank: true` to return it as is.
+    def parse_not_blank(val, allow_blank: false)
+      return if val.nil? || !allow_blank && val.is_a?(String) && val.blank?
+      yield(val)
     end
 
     # :method: parse_int
@@ -76,19 +84,9 @@ module RailsStuff
     #
     # Parses array of floats. Returns `nil` if `val` is not an array.
 
-    # :method: parse_string
-    # :call-seq: parse_string(val)
-    #
-    # Parse string value.
-
-    # :method: parse_string_array
-    # :call-seq: parse_string_array(val)
-    #
-    # Parses array of strings. Returns `nil` if `val` is not an array.
-
     # Parsers for generic types, which are implemented with #to_i, #to_f & #to_s
     # methods.
-    %w(string int float).each do |type|
+    %w(int float).each do |type|
       block = :"to_#{type[0]}".to_proc
 
       define_method "parse_#{type}" do |val|
@@ -98,6 +96,16 @@ module RailsStuff
       define_method "parse_#{type}_array" do |val|
         parse_array(val, &block)
       end
+    end
+
+    # Parse string value.
+    def parse_string(val)
+      parse(val, allow_blank: true, &:to_s)
+    end
+
+    # Parses array of strings. Returns `nil` if `val` is not an array.
+    def parse_string_array(val)
+      parse_array(val, allow_blank: true, &:to_s)
     end
 
     # Parse decimal value.
@@ -135,7 +143,7 @@ module RailsStuff
 
     # Parse JSON string.
     def parse_json(val)
-      parse(val) { JSON.parse(val) if val.present? }
+      parse(val) { JSON.parse(val) }
     end
   end
 end

@@ -4,13 +4,65 @@ require 'active_support/core_ext/time'
 Time.zone_default = Time.find_zone('UTC')
 
 RSpec.describe RailsStuff::ParamsParser do
+  describe '.parse_string' do
+    subject { ->(val = input) { described_class.parse_string(val) } }
+
+    it 'casts input to string' do
+      {
+        nil     => nil,
+        ''      => '',
+        'a'     => 'a',
+        1       => '1',
+        []      => '[]',
+      }.each do |input, expected|
+        expect(subject.call(input)).to eq expected
+      end
+    end
+
+    context 'when input is invalid' do
+      let(:input) { Object.new }
+      before do
+        def input.to_s
+          raise 'test'
+        end
+      end
+      it { should raise_error(described_class::Error) }
+    end
+  end
+
+  describe '.parse_string_array' do
+    subject { ->(val = input) { described_class.parse_string_array(val) } }
+
+    it 'casts input to string' do
+      {
+        nil => nil,
+        ''  => nil,
+        [1, :a, 'b'] => %w(1 a b),
+        ['str', '', nil] => ['str', '', nil],
+      }.each do |input, expected|
+        expect(subject.call(input)).to eq expected
+      end
+    end
+
+    context 'when input is invalid' do
+      let(:input) { [Object.new, '1'] }
+      before do
+        val = input[0]
+        def val.to_s
+          raise 'test'
+        end
+      end
+      it { should raise_error(described_class::Error) }
+    end
+  end
+
   describe '.parse_int' do
     subject { ->(val = input) { described_class.parse_int(val) } }
 
     it 'casts input to integer' do
       {
         nil     => nil,
-        ''      => 0,
+        ''      => nil,
         'a'     => 0,
         '1'     => 1,
         '-5.5'  => -5,
@@ -33,7 +85,7 @@ RSpec.describe RailsStuff::ParamsParser do
         nil => nil,
         ''  => nil,
         ['1', '2', 3, '-5.5'] => [1, 2, 3, -5],
-        ['1', '2', '', '3', 'a', nil] => [1, 2, 0, 3, 0, nil],
+        ['1', '2', '', '3', 'a', nil] => [1, 2, nil, 3, 0, nil],
       }.each do |input, expected|
         expect(subject.call(input)).to eq expected
       end
@@ -51,7 +103,7 @@ RSpec.describe RailsStuff::ParamsParser do
     it 'casts input to BigDecimal' do
       {
         nil     => nil,
-        ''      => 0,
+        ''      => nil,
         'a'     => 0,
         '1'     => 1,
         '-5.5'  => -5.5,
@@ -76,7 +128,7 @@ RSpec.describe RailsStuff::ParamsParser do
         nil => nil,
         ''  => nil,
         ['1', '2', 3, '-5.5'] => [1, 2, 3, -5.5],
-        ['1', '2', '', '3', 'a', nil] => [1, 2, 0, 3, 0, nil],
+        ['1', '2', '', '3', 'a', nil] => [1, 2, nil, 3, 0, nil],
       }.each do |input, expected|
         result = subject.call(input)
         expect(result).to eq expected
@@ -110,6 +162,11 @@ RSpec.describe RailsStuff::ParamsParser do
 
       context 'when argument is empty string' do
         let(:input) { '' }
+        its(:call) { should eq nil }
+      end
+
+      context 'when argument is not date representation' do
+        let(:input) { 'smth' }
         it { should raise_error(described_class::Error) }
       end
     end

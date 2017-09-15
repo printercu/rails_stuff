@@ -10,6 +10,7 @@
 ### Misc
 
 - Parse BigDecimals with ParamsParser.
+- ParamsParser parses empty strings to `nil` (except `parse_string`).
 
 ## 0.6.0.rc1
 
