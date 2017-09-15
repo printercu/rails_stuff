@@ -310,7 +310,7 @@ Project.internal or Project.big
 Have you missed type-casting outside of `ActiveRecord::Base`? Here is it:
 
 ```ruby
-ParamsParser.parse_int(params[:field]) # _float, _string, _boolean, _datetime
+ParamsParser.parse_int(params[:field]) # _float, _decimal, _string, _boolean, _datetime
 ParamsParser.parse_int_array(params[:field_with_array])
 ParamsParser.parse_json(json_string)
 

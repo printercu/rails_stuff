@@ -45,6 +45,51 @@ RSpec.describe RailsStuff::ParamsParser do
     end
   end
 
+  describe '.parse_decimal' do
+    subject { ->(val = input) { described_class.parse_decimal(val) } }
+
+    it 'casts input to BigDecimal' do
+      {
+        nil     => nil,
+        ''      => 0,
+        'a'     => 0,
+        '1'     => 1,
+        '-5.5'  => -5.5,
+      }.each do |input, expected|
+        result = subject.call(input)
+        expect(result).to eq expected
+        expect(result).to be_instance_of BigDecimal if result
+      end
+    end
+
+    context 'when input is invalid' do
+      let(:input) { [] }
+      it { should raise_error(described_class::Error) }
+    end
+  end
+
+  describe '.parse_decimal_array' do
+    subject { ->(val = input) { described_class.parse_decimal_array(val) } }
+
+    it 'casts input to BigDecimal' do
+      {
+        nil => nil,
+        ''  => nil,
+        ['1', '2', 3, '-5.5'] => [1, 2, 3, -5.5],
+        ['1', '2', '', '3', 'a', nil] => [1, 2, 0, 3, 0, nil],
+      }.each do |input, expected|
+        result = subject.call(input)
+        expect(result).to eq expected
+        result.each { |x| expect(x).to be_instance_of BigDecimal if x } if result
+      end
+    end
+
+    context 'when input is invalid' do
+      let(:input) { [['1'], '1'] }
+      it { should raise_error(described_class::Error) }
+    end
+  end
+
   describe '.parse_boolean' do
     subject { ->(val = input) { described_class.parse_boolean(val) } }
     it 'parses boolean values' do

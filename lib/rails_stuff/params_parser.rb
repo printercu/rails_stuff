@@ -100,6 +100,16 @@ module RailsStuff
       end
     end
 
+    # Parse decimal value.
+    def parse_decimal(val)
+      parse(val) { |x| BigDecimal.new(x) }
+    end
+
+    # Parses array of decimals. Returns `nil` if `val` is not an array.
+    def parse_decimal_array(val)
+      parse_array(val) { |x| BigDecimal.new(x) }
+    end
+
     # Parse boolean using ActiveResord's parser.
     def parse_boolean(val)
       parse(val) do

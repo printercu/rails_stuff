@@ -7,6 +7,10 @@
   and `RailsStuff::ResourcesController::StiHelpers::InvalidType` error instead of
   `ActiveRecord::NotFound` for invalid type.
 
+### Misc
+
+- Parse BigDecimals with ParamsParser.
+
 ## 0.6.0.rc1
 
 ### Controllers
