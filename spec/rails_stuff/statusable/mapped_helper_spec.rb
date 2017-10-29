@@ -13,7 +13,7 @@ RSpec.describe RailsStuff::Statusable::MappedHelper, :db_cleaner do
       has_status_field :status, statuses, validate: false
     end
   end
-  before { add_translations(status: %w(confirmed rejected)) }
+  before { add_translations(status: %w[confirmed rejected]) }
 
   its(:list) { should eq statuses.keys }
   its(:list) { should be_frozen }

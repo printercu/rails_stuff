@@ -124,7 +124,7 @@ RSpec.describe RailsStuff::RedisStorage do
 
       context 'for scoped key' do
         it 'generates new id for the record' do
-          model.reset_id_seq([:a, :b])
+          model.reset_id_seq(%i[a b])
           redis.del("#{prefix}:a:b:1")
 
           expect do

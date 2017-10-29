@@ -11,13 +11,16 @@ module RailsStuff
         notice:   'alert-info',
       }.stringify_keys.freeze
 
+      CROSS = '&times;'.html_safe.freeze # rubocop:disable Rails/OutputSafety
+
       def flash_messages
-        flash.map do |type, message|
+        messages = flash.map do |type, message|
           content_tag :div, class: [:alert, BOOTSTRAP_FLASH_TYPE[type] || type] do
-            content_tag(:button, '&times;'.html_safe, class: :close, data: {dismiss: :alert}) +
+            content_tag(:button, cross, class: :close, data: {dismiss: :alert}) +
               simple_format(message)
           end
-        end.join.html_safe
+        end
+        safe_join(messages)
       end
 
       ICONS = {

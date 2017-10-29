@@ -37,7 +37,7 @@ RSpec.describe RailsStuff::ParamsParser do
       {
         nil => nil,
         ''  => nil,
-        [1, :a, 'b'] => %w(1 a b),
+        [1, :a, 'b'] => %w[1 a b],
         ['str', '', nil] => ['str', '', nil],
       }.each do |input, expected|
         expect(subject.call(input)).to eq expected

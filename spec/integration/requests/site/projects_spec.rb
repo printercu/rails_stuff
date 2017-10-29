@@ -113,7 +113,7 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :request do
     context 'when update succeeds' do
       it 'redirects to index' do
         expect { should be_redirect }.
-          to change { resource.reload.attributes.slice(*%w(name department company type)) }.
+          to change { resource.reload.attributes.slice('name', 'department', 'company', 'type') }.
           to(
             'name' => 'New project',
             'department' => nil,
@@ -128,7 +128,7 @@ RSpec.describe Site::ProjectsController, :db_cleaner, type: :request do
 
         it 'respects per-type allowed attributes' do
           expect { should redirect_to site_project_path(user) }.
-            to change { resource.reload.attributes.slice(*%w(name department company type)) }.
+            to change { resource.reload.attributes.slice('name', 'department', 'company', 'type') }.
             to(
               'name' => 'New project',
               'department' => 'D',

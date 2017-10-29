@@ -89,10 +89,10 @@ RSpec.describe RailsStuff::ResourcesController::StiHelpers do
     it 'adds args to .permitted_attrs_for' do
       expect { klass.permit_attrs_for :user, :name, :lastname }.
         to change { klass.permitted_attrs_for[:user] }.
-        from([]).to([:name, :lastname])
-      expect { klass.permit_attrs_for :user, project_attributes: [:id, :_destroy] }.
+        from([]).to(%i[name lastname])
+      expect { klass.permit_attrs_for :user, project_attributes: %i[id _destroy] }.
         to change { klass.permitted_attrs_for[:user] }.
-        by([project_attributes: [:id, :_destroy]])
+        by([project_attributes: %i[id _destroy]])
     end
   end
 

@@ -18,9 +18,9 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
   end
   before do
     add_translations(
-      status: %w(confirmed rejected),
-      delivery_status: %w(sent complete),
-      delivery_method: %w(pickup local international),
+      status: %w[confirmed rejected],
+      delivery_status: %w[sent complete],
+      delivery_method: %w[pickup local international],
     )
   end
 

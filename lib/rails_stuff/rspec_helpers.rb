@@ -11,7 +11,7 @@ module RailsStuff
     # Single endpoint for multiple seups. Use `:only` and `:except` options
     # to filter actions.
     def setup(only: nil, except: nil)
-      items = instance_methods.map(&:to_s) - %w(setup)
+      items = instance_methods.map(&:to_s) - %w[setup]
       items -= Array.wrap(except).map(&:to_s) if except
       if only
         only = Array.wrap(only).map(&:to_s)
@@ -21,13 +21,13 @@ module RailsStuff
       items.uniq.each { |item| public_send(item) }
     end
 
-    %w(
+    %w[
       concurrency
       groups/request
       groups/feature
       matchers/be_valid_js
       matchers/redirect_with_turbolinks
-    ).each do |file|
+    ].each do |file|
       define_method(file) { require "rails_stuff/rspec_helpers/#{file}" }
     end
 
@@ -52,7 +52,7 @@ module RailsStuff
         config.database_cleaner_strategy = {feature: :truncation}
         config.database_cleaner_strategy.default = :transaction
         config.add_setting :database_cleaner_options
-        config.database_cleaner_options = {truncation: {except: %w(spatial_ref_sys)}}
+        config.database_cleaner_options = {truncation: {except: %w[spatial_ref_sys]}}
         config.add_setting :database_cleaner_args
         config.database_cleaner_args = ->(ex) do
           strategy = ex.metadata[:concurrent] && :truncation

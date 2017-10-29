@@ -46,7 +46,7 @@ module RailsStuff
     # Parses value with specified block. Reraises occured error with Error.
     def parse(val, *args, &block)
       parse_not_blank(val, *args, &block)
-    rescue => e
+    rescue => e # rubocop:disable Lint/RescueWithoutErrorClass
       raise Error.new(e.message, val), nil, e.backtrace
     end
 
@@ -86,7 +86,7 @@ module RailsStuff
 
     # Parsers for generic types, which are implemented with #to_i, #to_f & #to_s
     # methods.
-    %w(int float).each do |type|
+    %w[int float].each do |type|
       block = :"to_#{type[0]}".to_proc
 
       define_method "parse_#{type}" do |val|

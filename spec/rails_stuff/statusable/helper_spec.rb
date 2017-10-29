@@ -5,7 +5,7 @@ RSpec.describe RailsStuff::Statusable::Helper, :db_cleaner do
 
   subject { instance }
   let(:instance) { model.statuses }
-  let(:statuses) { %i(confirmed banned) }
+  let(:statuses) { %i[confirmed banned] }
   let(:model) do
     statuses = self.statuses
     build_named_class :Customer, ActiveRecord::Base do
@@ -13,7 +13,7 @@ RSpec.describe RailsStuff::Statusable::Helper, :db_cleaner do
       has_status_field :status, statuses, validate: false
     end
   end
-  before { add_translations(status: %w(confirmed banned)) }
+  before { add_translations(status: %w[confirmed banned]) }
 
   its(:list) { should eq statuses }
   its(:list) { should be_frozen }

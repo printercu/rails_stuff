@@ -148,7 +148,7 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :request do
     context 'when destroy succeeds' do
       it 'redirects to index' do
         expect { should redirect_to site_users_path }.
-          to change { User.find_by_id resource.id }.to(nil)
+          to change { User.find_by id: resource.id }.to(nil)
       end
     end
 
@@ -161,7 +161,7 @@ RSpec.describe Site::UsersController, :db_cleaner, type: :request do
 
       it 'redirects to index and flashes error' do
         expect { should redirect_to site_users_path }.
-          to_not change { User.find_by_id resource.id }
+          to_not change { User.find_by id: resource.id }
         expect(controller_resource.errors[:base]).to be_present
         expect(flash[:error]).to be_present
       end

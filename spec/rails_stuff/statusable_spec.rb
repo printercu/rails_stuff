@@ -10,7 +10,7 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
   end
 
   describe '.has_status_field' do
-    subject { -> { model.has_status_field :field, [:a, :b], options, &block } }
+    subject { -> { model.has_status_field :field, %i[a b], options, &block } }
     let(:options) { {} }
     let(:block) {}
     it { should change { model.ancestors.size }.by(1) }
@@ -18,7 +18,7 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
     it { should change(model, :public_methods) }
 
     context 'for second field' do
-      before { model.has_status_field :field_2, [:c, :d] }
+      before { model.has_status_field :field_2, %i[c d] }
       it { should_not change { model.ancestors.size } }
     end
 

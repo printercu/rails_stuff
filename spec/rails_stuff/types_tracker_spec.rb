@@ -20,7 +20,7 @@ RSpec.describe RailsStuff::TypesTracker do
 
   # Can't do this with stubbing, 'cause class name is used before it's stubbed.
   module TypesTrackerTest
-    class Project < ActiveRecord::Base
+    class Project < ApplicationRecord
       extend RailsStuff::TypesTracker
 
       class Internal < self

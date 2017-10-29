@@ -29,8 +29,8 @@ Rails.application.routes.draw do
   end
 end
 
-RailsStuff::TestHelpers.setup only: %w(integration_session response)
-RailsStuff::RSpecHelpers.setup only: %w(groups/request clear_logs)
+RailsStuff::TestHelpers.setup only: %w[integration_session response]
+RailsStuff::RSpecHelpers.setup only: %w[groups/request clear_logs]
 
 # # Models
 module BuildDefault
@@ -43,7 +43,7 @@ module BuildDefault
   end
 end
 
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   has_many :projects, dependent: :nullify
   validates_presence_of :name, :email
   scope :by_email, ->(val) { where(email: val) }
@@ -55,7 +55,7 @@ class User < ActiveRecord::Base
   extend BuildDefault
 end
 
-class Project < ActiveRecord::Base
+class Project < ApplicationRecord
   belongs_to :user, required: true
   validates_presence_of :name
   extend RailsStuff::TypesTracker
@@ -77,13 +77,13 @@ class Project < ActiveRecord::Base
   end
 end
 
-class Customer < ActiveRecord::Base
+class Customer < ApplicationRecord
   extend ActiveModel::Translation
   extend RailsStuff::Statusable
-  has_status_field :status, [:verified, :banned, :premium]
+  has_status_field :status, %i[verified banned premium]
 end
 
-class Order < ActiveRecord::Base
+class Order < ApplicationRecord
   extend ActiveModel::Translation
   extend RailsStuff::Statusable
   has_status_field :status, mapping: {pending: 1, accepted: 2, delivered: 3}

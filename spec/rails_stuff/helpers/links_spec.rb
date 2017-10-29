@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe RailsStuff::Helpers::Links, type: :helper do
   before { allow(helper).to receive(:basic_link_icons) { icons } }
-  let(:icons) { %i(destroy edit new).map { |x| [x, :"#{x}_icon"] }.to_h }
+  let(:icons) { %i[destroy edit new].map { |x| [x, :"#{x}_icon"] }.to_h }
 
   describe '#basic_link_icon' do
     let(:icons) do

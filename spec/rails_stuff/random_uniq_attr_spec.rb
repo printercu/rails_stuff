@@ -4,7 +4,7 @@ RSpec.describe RailsStuff::RandomUniqAttr, :db_cleaner do
   let(:model) do
     described_class = self.described_class
     attr = self.attr
-    Class.new(ActiveRecord::Base) do
+    Class.new(ApplicationRecord) do
       self.table_name = :tokens
       extend described_class
       random_uniq_attr attr
@@ -47,7 +47,7 @@ RSpec.describe RailsStuff::RandomUniqAttr, :db_cleaner do
   describe '.random_uniq_attr' do
     let(:klass) do
       described_class = self.described_class
-      Class.new(ActiveRecord::Base) { extend described_class }
+      Class.new(ApplicationRecord) { extend described_class }
     end
 
     context 'when block is given' do

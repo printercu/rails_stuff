@@ -7,16 +7,16 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
     described_class = self.described_class
     build_named_class :Customer, ActiveRecord::Base do
       extend described_class
-      const_set(:STATUSES, %i(confirmed banned))
+      const_set(:STATUSES, %i[confirmed banned])
       has_status_field validate: false
-      has_status_field :subscription_status, %i(pending expired),
+      has_status_field :subscription_status, %i[pending expired],
         prefix: :subscription_
     end
   end
   before do
     add_translations(
-      status: %w(confirmed banned),
-      subscription_status: %w(pending expired),
+      status: %w[confirmed banned],
+      subscription_status: %w[pending expired],
     )
   end
 
@@ -124,14 +124,14 @@ RSpec.describe RailsStuff::Statusable, :db_cleaner do
   describe '.with_#{field}' do
     it 'filters records by field values' do
       assert_filter(-> { where(status: :test) }) { with_status :test }
-      assert_filter(-> { where(status: [:test, :test2]) }) { with_status [:test, :test2] }
+      assert_filter(-> { where(status: %i[test test2]) }) { with_status %i[test test2] }
     end
 
     context 'for custom field' do
       it 'filters records by field values' do
         assert_filter(-> { where(subscription_status: :test) }) { with_subscription_status :test }
-        assert_filter(-> { where(subscription_status: [:test, :test2]) }) do
-          with_subscription_status [:test, :test2]
+        assert_filter(-> { where(subscription_status: %i[test test2]) }) do
+          with_subscription_status %i[test test2]
         end
       end
     end

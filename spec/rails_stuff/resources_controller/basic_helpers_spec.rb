@@ -64,9 +64,9 @@ RSpec.describe RailsStuff::ResourcesController::BasicHelpers do
 
     it 'adds args to .permitted_attrs' do
       expect { klass.permit_attrs :name, :lastname }.
-        to change(klass, :permitted_attrs).from([]).to([:name, :lastname])
-      expect { klass.permit_attrs project_attributes: [:id, :_destroy] }.
-        to change(klass, :permitted_attrs).by([project_attributes: [:id, :_destroy]])
+        to change(klass, :permitted_attrs).from([]).to(%i[name lastname])
+      expect { klass.permit_attrs project_attributes: %i[id _destroy] }.
+        to change(klass, :permitted_attrs).by([project_attributes: %i[id _destroy]])
     end
   end
 

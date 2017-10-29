@@ -40,7 +40,8 @@ module RailsStuff
         begin
           raise 'Available only for persisted record' unless persisted?
           transaction(requires_new: true) do
-            update_column field, self.class.send(generate_method, self)
+            new_value = self.class.send(generate_method, self)
+            update_column field, new_value # rubocop:disable Rails/SkipsModelValidations
           end
         rescue ActiveRecord::RecordNotUnique
           attempt += 1

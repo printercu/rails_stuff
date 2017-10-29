@@ -43,7 +43,7 @@ module RailsStuff
     # Set redis_set_options.
 
     # Setters that overrides methods, so new values are inherited without recursive `super`.
-    [:redis_pool, :redis_set_options].each do |name|
+    %i[redis_pool redis_set_options].each do |name|
       define_method "#{name}=" do |val|
         singleton_class.class_eval do
           remove_possible_method(name)

@@ -20,7 +20,7 @@ RSpec.describe RailsStuff::SortScope do
       assert_filter({id: :asc},   val, :id,         allowed, sort_desc: '0')
     end
 
-    let(:allowed) { [:id, :name] }
+    let(:allowed) { %i[id name] }
 
     context 'when val is not set' do
       it 'returns default' do
@@ -77,7 +77,7 @@ RSpec.describe RailsStuff::SortScope do
       end
     end
     let(:controller) { controller_class.new }
-    let(:model) { Class.new(ActiveRecord::Base) { self.table_name = :users } }
+    let(:model) { Class.new(ApplicationRecord) { self.table_name = :users } }
 
     def assert_sort_query(expected, **params)
       allow(controller).to receive(:params) do
@@ -98,7 +98,7 @@ RSpec.describe RailsStuff::SortScope do
     end
 
     context 'when sorting by multiple fields is allowed' do
-      before { controller_class.has_sort_scope by: [:id, :package_name] }
+      before { controller_class.has_sort_scope by: %i[id package_name] }
 
       it 'applies all scopes' do
         assert_current_scope({})

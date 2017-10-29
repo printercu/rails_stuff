@@ -6,7 +6,7 @@ module RailsStuff
     extend self
 
     def setup(only: nil, except: nil)
-      items = instance_methods.map(&:to_s) - %w(setup)
+      items = instance_methods.map(&:to_s) - %w[setup]
       items -= Array.wrap(except).map(&:to_s) if except
       if only
         only = Array.wrap(only).map(&:to_s)
@@ -16,10 +16,10 @@ module RailsStuff
       items.each { |item| public_send(item) }
     end
 
-    %w(
+    %w[
       integration_session
       response
-    ).each do |file|
+    ].each do |file|
       define_method(file.tr('/', '_')) { require "rails_stuff/test_helpers/#{file}" }
     end
 

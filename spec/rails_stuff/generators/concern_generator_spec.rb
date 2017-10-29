@@ -8,7 +8,7 @@ require 'rails_stuff/generators/concern/concern_generator'
 
 class ConcernGeneratorTest < Rails::Generators::TestCase
   self.generator_class = RailsStuff::Generators::ConcernGenerator
-  arguments %w(User::Authentication)
+  arguments %w[User::Authentication]
 
   def test_concern_is_created
     run_generator
@@ -30,7 +30,7 @@ end
 
 class ControllerConcernGeneratorTest < Rails::Generators::TestCase
   self.generator_class = RailsStuff::Generators::ConcernGenerator
-  arguments %w(admin_controller/localized)
+  arguments %w[admin_controller/localized]
 
   def test_concern_is_created
     run_generator
