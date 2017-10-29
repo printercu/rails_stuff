@@ -19,6 +19,7 @@ module RailsStuff
   autoload :SortScope
   autoload :Statusable
   autoload :TestHelpers, 'rails_stuff/test_helpers'
+  autoload :TransformAttrs
   autoload :TypesTracker
 
   module_function

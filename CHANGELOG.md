@@ -7,10 +7,15 @@
   and `RailsStuff::ResourcesController::StiHelpers::InvalidType` error instead of
   `ActiveRecord::NotFound` for invalid type.
 
+### Models
+
+- `TransformAttrs`.
+
 ### Misc
 
 - Parse BigDecimals with ParamsParser.
 - ParamsParser parses empty strings to `nil` (except `parse_string`).
+
 
 ## 0.6.0.rc1
 
