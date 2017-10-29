@@ -16,7 +16,7 @@ module RailsStuff
       def flash_messages
         messages = flash.map do |type, message|
           content_tag :div, class: [:alert, BOOTSTRAP_FLASH_TYPE[type] || type] do
-            content_tag(:button, cross, class: :close, data: {dismiss: :alert}) +
+            content_tag(:button, CROSS, class: :close, data: {dismiss: :alert}) +
               simple_format(message)
           end
         end
