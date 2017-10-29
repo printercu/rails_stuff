@@ -1,5 +1,4 @@
 require 'active_support/core_ext/class/attribute'
-require 'active_support/deprecation'
 
 module RailsStuff
   # Adds `types_list` method which tracks all descendants.

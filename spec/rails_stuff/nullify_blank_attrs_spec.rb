@@ -13,6 +13,7 @@ RSpec.describe RailsStuff::NullifyBlankAttrs do
     end
   end
   let(:instance) { klass.new }
+  around { |ex| RailsStuff.deprecation_07.silence { ex.run } }
 
   it 'nullifies blank attrs' do
     expect { instance.nested = 'test' }.to change { instance.nested }.from(nil).to('test')

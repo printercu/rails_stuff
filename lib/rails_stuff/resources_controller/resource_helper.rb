@@ -2,15 +2,6 @@ module RailsStuff
   module ResourcesController
     # Defines resource helper and finder method.
     module ResourceHelper
-      class << self
-        def deprecation
-          @deprecation ||= begin
-            require 'active_support/deprecation'
-            ActiveSupport::Deprecation.new('0.7', 'RailsStuff')
-          end
-        end
-      end
-
       # Defines protected helper method. Ex. for `:user`
       #
       #     helper_method :user
@@ -26,7 +17,7 @@ module RailsStuff
       #
       # rubocop:disable CyclomaticComplexity, PerceivedComplexity, AbcSize
       def resource_helper(name, param: nil, source: nil, **options)
-        ResourceHelper.deprecation.warn('use :source instead of :class') if options.key?(:class)
+        RailsStuff.deprecation_07.warn('use :source instead of :class') if options.key?(:class)
 
         param ||= name.to_s.foreign_key.to_sym
         define_method("#{name}?") { params.key?(param) }

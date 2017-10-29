@@ -8,6 +8,7 @@ module RailsStuff
   #       # ...
   module NullifyBlankAttrs
     def nullify_blank_attrs(*attrs)
+      RailsStuff.deprecation_07.warn('Use transform_attrs *attrs, with: :nullify')
       nullify_blank_attrs_methods.class_eval do
         attrs.each do |attr|
           define_method("#{attr}=") { |val| super(val.presence) }
