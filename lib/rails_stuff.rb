@@ -31,6 +31,13 @@ module RailsStuff
   def rails4?
     rails_version::MAJOR == 4
   end
+
+  def deprecation_07
+    @deprecation ||= begin
+      require 'active_support/deprecation'
+      ActiveSupport::Deprecation.new('0.7', 'RailsStuff')
+    end
+  end
 end
 
 require 'rails_stuff/engine' if defined?(Rails::Engine)

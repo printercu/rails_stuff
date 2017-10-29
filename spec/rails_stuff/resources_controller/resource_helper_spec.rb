@@ -53,7 +53,7 @@ RSpec.describe RailsStuff::ResourcesController::ResourceHelper do
       let(:method) { :admin_user }
       let(:options) { {class: :Admin} }
       let(:model_name) { :Admin }
-      around { |ex| described_class.deprecation.silence { ex.run } }
+      around { |ex| RailsStuff.deprecation_07.silence { ex.run } }
       include_examples 'finder method', :admin_user_id
     end
 

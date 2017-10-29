@@ -9,7 +9,7 @@
 
 ### Models
 
-- `TransformAttrs`.
+- `TransformAttrs` in favour of `NullifyBlankAttrs` (deprecated).
 
 ### Misc
 

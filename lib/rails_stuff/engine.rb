@@ -7,6 +7,7 @@ module RailsStuff
     nullify_blank_attrs:  :model,
     random_uniq_attr:     :model,
     statusable:           :model,
+    transform_attrs:      :model,
     resources_controller: [
       -> { defined?(::Responders) && :controller },
       -> { ResourcesController.use_kaminari! if defined?(::Kaminari) },
