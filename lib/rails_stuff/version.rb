@@ -7,7 +7,7 @@ module RailsStuff
     MAJOR = 0
     MINOR = 6
     TINY  = 0
-    PRE   = 'rc1'.freeze
+    PRE   = 'rc2'.freeze
 
     STRING = [MAJOR, MINOR, TINY, PRE].compact.join('.')
 
