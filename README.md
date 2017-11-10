@@ -5,7 +5,7 @@
 
 Collection of useful modules for ruby projects to provide great DRY, TDD experience.
 While some of them are Rails-specific, most will work in any environment
-ignoring gem's name.
+despite gem's name.
 
 All modules are lazy loaded, so it's ok to require whole gem at once.
 Some of them are activated by default for best experience,
