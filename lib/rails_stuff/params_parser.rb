@@ -110,12 +110,12 @@ module RailsStuff
 
     # Parse decimal value.
     def parse_decimal(val)
-      parse(val) { |x| BigDecimal.new(x) }
+      parse(val) { |x| string_to_decimal(x) }
     end
 
     # Parses array of decimals. Returns `nil` if `val` is not an array.
     def parse_decimal_array(val)
-      parse_array(val) { |x| BigDecimal.new(x) }
+      parse_array(val) { |x| string_to_decimal(x) }
     end
 
     # Parse boolean using ActiveResord's parser.
@@ -144,6 +144,15 @@ module RailsStuff
     # Parse JSON string.
     def parse_json(val)
       parse(val) { JSON.parse(val) }
+    end
+
+    private
+
+    # Workaround for https://github.com/ruby/bigdecimal/issues/63
+    def string_to_decimal(val)
+      BigDecimal.new(val)
+    rescue ArgumentError
+      BigDecimal.new(0)
     end
   end
 end
